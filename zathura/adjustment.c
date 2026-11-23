@@ -6,19 +6,17 @@
 
 #include "document-widget.h"
 #include "page.h"
+#include "page-widget.h"
 #include "zathura.h"
 
-double page_calc_height_width(zathura_document_t* document, zathura_page_t* page, unsigned int* page_height,
-                              unsigned int* page_width, bool rotate) {
-  g_return_val_if_fail(document != NULL && page_height != NULL && page_width != NULL, 0.0);
+double page_calc_size(zathura_page_t* page, double scale, unsigned int rotation, unsigned int* page_height,
+                      unsigned int* page_width) {
+  g_return_val_if_fail(page != NULL && page_height != NULL && page_width != NULL, 0.0);
 
-  const double zoom   = zathura_page_get_zoom(page);
   const double height = zathura_page_get_height(page);
   const double width  = zathura_page_get_width(page);
 
-  double scale = zoom * zathura_document_get_scale(document);
-
-  if (rotate == true && (zathura_document_get_rotation(document) + zathura_page_get_rotation(page)) % 180 != 0) {
+  if (rotation % 180 != 0) {
     *page_width  = round(height * scale);
     *page_height = round(width * scale);
     scale        = MAX(*page_width / height, *page_height / width);
@@ -31,23 +29,17 @@ double page_calc_height_width(zathura_document_t* document, zathura_page_t* page
   return scale;
 }
 
-void page_calc_position(zathura_document_t* document, double x, double y, double* xn, double* yn) {
-  g_return_if_fail(document != NULL && xn != NULL && yn != NULL);
+double page_calc_height_width(ZathuraDocumentWidget* widget, zathura_page_t* page, unsigned int* page_height,
+                              unsigned int* page_width, bool rotate) {
+  g_return_val_if_fail(widget != NULL && page != NULL, 0.0);
 
-  const unsigned int rot = zathura_document_get_rotation(document);
-  if (rot == 90) {
-    *xn = 1 - y;
-    *yn = x;
-  } else if (rot == 180) {
-    *xn = 1 - x;
-    *yn = 1 - y;
-  } else if (rot == 270) {
-    *xn = y;
-    *yn = 1 - x;
-  } else {
-    *xn = x;
-    *yn = y;
-  }
+  ZathuraPageWidget* page_widget = zathura_document_widget_get_page(widget, zathura_page_get_index(page));
+
+  const double scale = zathura_document_widget_get_scale(widget) * zathura_page_widget_get_zoom(page_widget);
+  const unsigned int rotation =
+      rotate ? (zathura_document_widget_get_rotation(widget) + zathura_page_widget_get_rotation(page_widget)) % 360 : 0;
+
+  return page_calc_size(page, scale, rotation, page_height, page_width);
 }
 
 unsigned int position_to_page_number(zathura_t* zathura, double pos_x, double pos_y) {
@@ -119,7 +111,7 @@ void page_number_to_position(ZathuraDocumentWidget* widget, unsigned int page_nu
   g_object_get(widget, "layout-mode", &mode, NULL);
   if (mode == DOCUMENT_WIDGET_SINGLE) {
     zathura_document_t* document = zathura_document_widget_get_document(widget);
-    page_calc_height_width(document, zathura_document_get_page(document, page_number), &doc_height, &doc_width, true);
+    page_calc_height_width(widget, zathura_document_get_page(document, page_number), &doc_height, &doc_width, true);
     cell_height = doc_height;
     cell_width  = doc_width;
     cell_pos_x  = 0;

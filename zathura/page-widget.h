@@ -42,9 +42,63 @@ GType zathura_page_widget_get_type(void);
  * @param zathura the zathura instance
  * @param page the page to be displayed
  * @param renderer the renderer associated with the page's document
+ * @param document_widget the owning view (must outlive use of this page widget)
  * @return a page view widget
  */
-GtkWidget* zathura_page_widget_new(zathura_t* zathura, zathura_page_t* page, ZathuraRenderer* renderer);
+GtkWidget* zathura_page_widget_new(zathura_t* zathura, zathura_page_t* page, ZathuraRenderer* renderer,
+                                   ZathuraDocumentWidget* document_widget);
+
+/**
+ * Returns the additional rotation of the page view.
+ *
+ * @param widget The page widget
+ * @return The page rotation in degrees
+ */
+unsigned int zathura_page_widget_get_rotation(ZathuraPageWidget* widget);
+
+/**
+ * Sets the new additional rotation of the page view, modulo 360 degrees.
+ * The document layout must be refreshed after changing the rotation.
+ *
+ * @param widget The page widget
+ * @param rotation The new page rotation in degrees
+ */
+void zathura_page_widget_set_rotation(ZathuraPageWidget* widget, unsigned int rotation);
+
+/**
+ * Returns the zoom of the page view, relative to the document view's zoom.
+ *
+ * @param widget The page widget
+ * @return The page zoom
+ */
+double zathura_page_widget_get_zoom(ZathuraPageWidget* widget);
+
+/**
+ * Sets the new zoom of the page view, relative to the document view's zoom.
+ * The document layout must be refreshed after changing the zoom.
+ *
+ * @param widget The page widget
+ * @param zoom The new page zoom
+ */
+void zathura_page_widget_set_zoom(ZathuraPageWidget* widget, double zoom);
+
+/**
+ * Returns the combined document and page scale.
+ *
+ * @param widget The page widget
+ * @return The scale in logical pixels per point
+ */
+double zathura_page_widget_get_scale(ZathuraPageWidget* widget);
+
+/**
+ * Calculates new rectangle coordinates using the combined document and page
+ * rotation and scale.
+ *
+ * @param widget The page widget
+ * @param rectangle The rectangle in unscaled and unrotated page coordinates
+ * @return The rectangle in widget coordinates
+ */
+zathura_rectangle_t zathura_page_widget_recalc_rectangle(ZathuraPageWidget* widget, zathura_rectangle_t rectangle);
 
 /**
  * Update the widget's surface. This should only be called from the render

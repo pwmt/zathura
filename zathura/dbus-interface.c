@@ -16,6 +16,7 @@
 #include "adjustment.h"
 #include "config.h"
 #include "document.h"
+#include "document-widget.h"
 #include "internal.h"
 #include "links.h"
 #include "macros.h"
@@ -606,7 +607,7 @@ static GVariant* handle_get_property(GDBusConnection* UNUSED(connection), const 
   if (g_strcmp0(property_name, "filename") == 0) {
     return g_variant_new_string(zathura_document_get_path(document));
   } else if (g_strcmp0(property_name, "pagenumber") == 0) {
-    return g_variant_new_uint32(zathura_document_get_current_page_number(document));
+    return g_variant_new_uint32(zathura_document_widget_get_current_page_number(priv->zathura->ui.document_widget));
   } else if (g_strcmp0(property_name, "numberofpages") == 0) {
     return g_variant_new_uint32(zathura_document_get_number_of_pages(document));
   } else if (g_strcmp0(property_name, "documentinfo") == 0) {

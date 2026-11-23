@@ -99,7 +99,7 @@ void cb_document_widget_position_changed(ZathuraDocumentWidget* widget, zathura_
     GtkAdjustment* vertical = gtk_scrollable_get_vadjustment(GTK_SCROLLABLE(widget));
     const unsigned int page =
         position_to_page_number(zathura, zathura_document_widget_get_position_x(widget), page_position_y(vertical));
-    zathura_document_set_current_page_number(zathura_get_document(zathura), page);
+    zathura_document_widget_set_current_page_number(zathura->ui.document_widget, page);
   }
   statusbar_page_number_update(zathura);
 }
@@ -111,7 +111,7 @@ void cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data) {
   }
 
   zathura_document_t* document = zathura_get_document(zathura);
-  unsigned int page_id         = zathura_document_get_current_page_number(document);
+  unsigned int page_id         = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
   zathura_page_t* page         = zathura_document_get_page(document, page_id);
   if (page == NULL) {
     return;
@@ -147,10 +147,9 @@ void cb_scale_factor(GObject* UNUSED(object), GParamSpec* UNUSED(pspec), gpointe
     return;
   }
 
-  zathura_document_t* document     = zathura_get_document(zathura);
-  zathura_device_factors_t current = zathura_document_get_device_factors(document);
-  if (fabs(new_factor - current.x) >= DBL_EPSILON || fabs(new_factor - current.y) >= DBL_EPSILON) {
-    zathura_document_set_device_factors(document, new_factor, new_factor);
+  const double current = zathura_document_widget_get_device_scale(zathura->ui.document_widget);
+  if (fabs(new_factor - current) >= DBL_EPSILON) {
+    zathura_document_widget_set_device_scale(zathura->ui.document_widget, new_factor);
     girara_debug("New device scale factor: %0.2f", new_factor);
     zathura_update_view_ppi(zathura);
     /* the viewport is not yet resized for the new scale, the size allocation that follows renders it */
@@ -234,8 +233,7 @@ void cb_page_layout_value_changed(girara_session_t* session, const char* name, g
 
   /* padding/column changes shift each page's relative position, so re-anchor on the current page;
      otherwise its stale ratio leaves it off-screen and unrendered until the next manual scroll */
-  zathura_document_t* document    = zathura_get_document(zathura);
-  const unsigned int current_page = zathura_document_get_current_page_number(document);
+  const unsigned int current_page = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
   double anchor_x = 0.0, anchor_y = 0.0;
   page_number_to_position(zathura->ui.document_widget, current_page, 0.5, 0.5, &anchor_x, &anchor_y);
   zathura_document_widget_set_position(document_widget, anchor_x, anchor_y);
@@ -523,7 +521,7 @@ void cb_page_widget_scaled_button_release(ZathuraPageWidget* page_widget, scaled
   }
 
   /* set page number (but don't scroll there. it was clicked on, so it's visible) */
-  zathura_document_set_current_page_number(zathura_get_document(zathura), zathura_page_get_index(page));
+  zathura_document_widget_set_current_page_number(zathura->ui.document_widget, zathura_page_get_index(page));
   refresh_view(zathura);
 
   if (event->state & zathura->global.synctex_edit_modmask) {
@@ -553,7 +551,7 @@ void cb_gesture_zoom_begin(GtkGesture* UNUSED(self), GdkEventSequence* UNUSED(se
   if (zathura_has_document(zathura) == false) {
     return;
   }
-  zathura->gesture.initial_zoom = zathura_document_get_zoom(zathura_get_document(zathura));
+  zathura->gesture.initial_zoom = zathura_document_widget_get_zoom(zathura->ui.document_widget);
 }
 
 void cb_gesture_zoom_scale_changed(GtkGestureZoom* UNUSED(self), gdouble scale, void* data) {

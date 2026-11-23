@@ -26,23 +26,17 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC(XXH3_state_t, XXH3_freeState)
  * Document
  */
 struct zathura_document_s {
-  void* data;                              /**< Custom data */
-  zathura_page_t** pages;                  /**< All pages of the document */
-  GMutex lock;                             /**< Document lock */
-  const zathura_plugin_t* plugin;          /**< Used plugin */
-  char* file_path;                         /**< File path of the document */
-  char* uri;                               /**< URI of the document */
-  char* basename;                          /**< Basename of the document */
-  const char* password;                    /**< Password of the document */
-  XXH128_canonical_t hash;                 /**< XXH3 hash of the document */
-  unsigned int current_page_number;        /**< Current page number */
-  unsigned int number_of_pages;            /**< Number of pages */
-  double zoom;                             /**< Zoom value */
-  unsigned int rotate;                     /**< Rotation */
-  int page_offset;                         /**< Page offset */
-  double view_ppi;                         /**< PPI of the current viewport */
-  zathura_device_factors_t device_factors; /**< x and y device scale factors (for e.g. HiDPI) */
-  bool hash_computed;                      /**< Whether the hash has been computed yet */
+  void* data;                     /**< Custom data */
+  zathura_page_t** pages;         /**< All pages of the document */
+  GMutex lock;                    /**< Document lock */
+  const zathura_plugin_t* plugin; /**< Used plugin */
+  char* file_path;                /**< File path of the document */
+  char* uri;                      /**< URI of the document */
+  char* basename;                 /**< Basename of the document */
+  const char* password;           /**< Password of the document */
+  XXH128_canonical_t hash;        /**< XXH3 hash of the document */
+  unsigned int number_of_pages;   /**< Number of pages */
+  bool hash_computed;             /**< Whether the hash has been computed yet */
 };
 
 static bool hash_file(XXH128_canonical_t* dst, const char* path) {
@@ -128,12 +122,8 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, 
     g_autoptr(GFile) gf = g_file_new_for_uri(document->uri);
     document->basename  = g_file_get_basename(gf);
   }
-  document->password         = password;
-  document->zoom             = 1.0;
-  document->plugin           = plugin;
-  document->view_ppi         = 0.0;
-  document->device_factors.x = 1.0;
-  document->device_factors.y = 1.0;
+  document->password = password;
+  document->plugin   = plugin;
 
   /* open document */
   const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
@@ -280,131 +270,6 @@ void zathura_document_set_number_of_pages(zathura_document_t* document, unsigned
   }
 
   document->number_of_pages = number_of_pages;
-}
-
-unsigned int zathura_document_get_current_page_number(zathura_document_t* document) {
-  if (document == NULL) {
-    return 0;
-  }
-
-  return document->current_page_number;
-}
-
-void zathura_document_set_current_page_number(zathura_document_t* document, unsigned int current_page) {
-  if (document == NULL) {
-    return;
-  }
-
-  document->current_page_number = current_page;
-}
-
-double zathura_document_get_zoom(zathura_document_t* document) {
-  if (document == NULL) {
-    return 0;
-  }
-
-  return document->zoom;
-}
-
-void zathura_document_set_zoom(zathura_document_t* document, double zoom) {
-  if (document == NULL) {
-    return;
-  }
-
-  document->zoom = zoom;
-}
-
-double zathura_document_get_scale(zathura_document_t* document) {
-  if (!document) {
-    return 0;
-  }
-
-  double ppi = document->view_ppi;
-  if (ppi < DBL_EPSILON) {
-    /* No PPI information -> use a typical value */
-    ppi = 100;
-  }
-
-  /* scale = pixels per point, and there are 72 points in one inch */
-  return document->zoom * ppi / 72.0;
-}
-
-unsigned int zathura_document_get_rotation(zathura_document_t* document) {
-  if (document == NULL) {
-    return 0;
-  }
-
-  return document->rotate;
-}
-
-void zathura_document_set_rotation(zathura_document_t* document, unsigned int rotation) {
-  if (!document) {
-    return;
-  }
-
-  rotation = rotation % 360;
-  if (rotation == 0 || rotation > 270) {
-    document->rotate = 0;
-  } else if (rotation <= 90) {
-    document->rotate = 90;
-  } else if (rotation <= 180) {
-    document->rotate = 180;
-  } else {
-    document->rotate = 270;
-  }
-}
-
-int zathura_document_get_page_offset(zathura_document_t* document) {
-  if (document == NULL) {
-    return 0;
-  }
-
-  return document->page_offset;
-}
-
-void zathura_document_set_page_offset(zathura_document_t* document, unsigned int page_offset) {
-  if (document == NULL) {
-    return;
-  }
-
-  document->page_offset = page_offset;
-}
-
-void zathura_document_set_viewport_ppi(zathura_document_t* document, double ppi) {
-  if (document == NULL) {
-    return;
-  }
-  document->view_ppi = ppi;
-}
-
-double zathura_document_get_viewport_ppi(zathura_document_t* document) {
-  if (document == NULL) {
-    return 0.0;
-  }
-  return document->view_ppi;
-}
-
-void zathura_document_set_device_factors(zathura_document_t* document, double x_factor, double y_factor) {
-  if (!document) {
-    return;
-  }
-
-  if (fabs(x_factor) < DBL_EPSILON || fabs(y_factor) < DBL_EPSILON) {
-    girara_debug("Ignoring new device factors %0.2f and %0.2f: too small", x_factor, y_factor);
-    return;
-  }
-
-  document->device_factors.x = x_factor;
-  document->device_factors.y = y_factor;
-}
-
-zathura_device_factors_t zathura_document_get_device_factors(zathura_document_t* document) {
-  if (document == NULL) {
-    /* The function is guaranteed to not return zero values */
-    return (zathura_device_factors_t){1.0, 1.0};
-  }
-
-  return document->device_factors;
 }
 
 zathura_error_t zathura_document_save_as(zathura_document_t* document, const char* path) {

@@ -17,12 +17,9 @@ struct zathura_page_s {
   zathura_document_t* document;       /**< Parent document */
   void* data;                         /**< Custom data */
   char* label;                        /**< Page label */
-  unsigned int rotate;                /**< Rotation */
   double height;                      /**< Page height */
   double width;                       /**< Page width */
-  double zoom;                        /**< Page zoom */
   unsigned int index;                 /**< Page number */
-  bool visible;                       /**< Page is visible */
   bool label_is_number;               /**< Page label is the same as the page number */
   gint loaded;                        /**< Page has been parsed by the plugin, atomic */
   zathura_text_layout_t* text_layout; /**< Cached text layout */
@@ -42,11 +39,8 @@ zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int inde
   }
 
   page->index           = index;
-  page->visible         = false;
   page->document        = document;
   page->label_is_number = false;
-  page->rotate          = 0;
-  page->zoom            = 1.0;
   page->loaded          = 0;
 
   /* the page is parsed later when it is used, not here */
@@ -151,22 +145,6 @@ unsigned int zathura_page_get_index(zathura_page_t* page) {
   return page->index;
 }
 
-unsigned int zathura_page_get_rotation(zathura_page_t* page) {
-  if (page == NULL) {
-    return 0;
-  }
-
-  return page->rotate;
-}
-
-void zathura_page_set_rotation(zathura_page_t* page, unsigned int rotate) {
-  if (page == NULL) {
-    return;
-  }
-
-  page->rotate = rotate;
-}
-
 double zathura_page_get_width(zathura_page_t* page) {
   if (page == NULL) {
     return -1;
@@ -211,38 +189,6 @@ void zathura_page_set_height(zathura_page_t* page, double height) {
   }
 
   page->height = height;
-}
-
-double zathura_page_get_zoom(zathura_page_t* page) {
-  if (page == NULL) {
-    return -1;
-  }
-
-  return page->zoom;
-}
-
-void zathura_page_set_zoom(zathura_page_t* page, double zoom) {
-  if (page == NULL) {
-    return;
-  }
-
-  page->zoom = zoom;
-}
-
-bool zathura_page_get_visibility(zathura_page_t* page) {
-  if (page == NULL) {
-    return false;
-  }
-
-  return page->visible;
-}
-
-void zathura_page_set_visibility(zathura_page_t* page, bool visibility) {
-  if (page == NULL) {
-    return;
-  }
-
-  page->visible = visibility;
 }
 
 void* zathura_page_get_data(zathura_page_t* page) {

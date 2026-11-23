@@ -714,7 +714,8 @@ static int position_compare(const visual_position_t* a, const visual_position_t*
 static void visual_point_to_position(zathura_t* zathura, unsigned int page_index, zathura_rectangle_t rect,
                                      double* pos_x, double* pos_y) {
   zathura_page_t* page          = zathura_document_get_page(zathura_get_document(zathura), page_index);
-  zathura_rectangle_t rectangle = recalc_rectangle(page, rect);
+  zathura_rectangle_t rectangle = zathura_page_widget_recalc_rectangle(
+      zathura_document_widget_ensure_page(zathura->ui.document_widget, zathura_page_get_index(page)), rect);
 
   unsigned int cell_height = 0;
   unsigned int cell_width  = 0;
@@ -771,12 +772,13 @@ static void visual_scroll_to_caret(zathura_t* zathura) {
   unsigned int doc_width  = 0;
   zathura_document_widget_get_document_size(zathura->ui.document_widget, &doc_height, &doc_width);
   zathura_page_t* page             = zathura_document_get_page(document, visual->cursor.page);
-  const zathura_rectangle_t scaled = recalc_rectangle(page, rect);
-  const double margin              = fmin(3 * fabs(scaled.y2 - scaled.y1) / doc_height, half_h / 2);
-  const double old_x               = zathura_document_widget_get_position_x(zathura->ui.document_widget);
-  const double old_y               = zathura_document_widget_get_position_y(zathura->ui.document_widget);
-  double new_x                     = old_x;
-  double new_y                     = old_y;
+  const zathura_rectangle_t scaled = zathura_page_widget_recalc_rectangle(
+      zathura_document_widget_ensure_page(zathura->ui.document_widget, zathura_page_get_index(page)), rect);
+  const double margin = fmin(3 * fabs(scaled.y2 - scaled.y1) / doc_height, half_h / 2);
+  const double old_x  = zathura_document_widget_get_position_x(zathura->ui.document_widget);
+  const double old_y  = zathura_document_widget_get_position_y(zathura->ui.document_widget);
+  double new_x        = old_x;
+  double new_y        = old_y;
 
   if (caret_y - margin < old_y - half_h) {
     new_y = caret_y - margin + half_h;
@@ -1066,7 +1068,7 @@ bool zathura_visual_enter(zathura_t* zathura, zathura_visual_kind_t kind) {
 
   zathura_document_t* document      = zathura_get_document(zathura);
   const unsigned int n_pages        = zathura_document_get_number_of_pages(document);
-  const unsigned int current        = zathura_document_get_current_page_number(document);
+  const unsigned int current        = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
   zathura_visual_t* visual          = visual_new(zathura);
   const zathura_visual_text_t* text = NULL;
   if (visual == NULL) {
@@ -1986,7 +1988,7 @@ static girara_list_t* visual_label_candidates(zathura_t* zathura) {
   const unsigned int n_pages = zathura_document_get_number_of_pages(document);
   for (unsigned int page_index = 0; page_index < n_pages; ++page_index) {
     zathura_page_t* page = zathura_document_get_page(document, page_index);
-    if (page == NULL || zathura_page_get_visibility(page) == false) {
+    if (page == NULL || zathura_document_widget_page_is_visible(zathura->ui.document_widget, page_index) == false) {
       continue;
     }
 
@@ -2022,7 +2024,7 @@ static girara_list_t* visual_label_candidates(zathura_t* zathura) {
     /* images with a visible part; images often reach beyond the page, so only their part on the page counts */
     const double page_width  = zathura_page_get_width(page);
     const double page_height = zathura_page_get_height(page);
-    const double label_step  = label_height / zathura_document_get_scale(document);
+    const double label_step  = label_height / zathura_document_widget_get_scale(zathura->ui.document_widget);
     girara_list_t* images    = zathura_page_images_get(page, NULL);
     girara_list_t* anchors   = girara_list_new_with_free(g_free);
     for (size_t idx = 0; images != NULL && anchors != NULL && idx != girara_list_size(images); ++idx) {
@@ -2217,7 +2219,8 @@ static ZathuraPageWidget* mouse_page_at(zathura_t* zathura, double view_x, doubl
 
   for (unsigned int idx = 0; idx < n_pages; ++idx) {
     zathura_page_t* page = zathura_document_get_page(document, idx);
-    if (page == NULL || (zathura_page_get_visibility(page) == false && idx != zathura->visual_mouse->start_page)) {
+    if (page == NULL || (zathura_document_widget_page_is_visible(zathura->ui.document_widget, idx) == false &&
+                         idx != zathura->visual_mouse->start_page)) {
       continue;
     }
     ZathuraPageWidget* widget = zathura_page_get_widget(zathura, page);

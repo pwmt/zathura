@@ -65,6 +65,119 @@ bool zathura_document_widget_set_document(ZathuraDocumentWidget* document_widget
 zathura_document_t* zathura_document_widget_get_document(ZathuraDocumentWidget* document);
 
 /**
+ * Returns the current page number of the document view.
+ *
+ * @param document The document widget
+ * @return Current page number
+ */
+unsigned int zathura_document_widget_get_current_page_number(ZathuraDocumentWidget* document);
+
+/**
+ * Sets the current page number of the document view.
+ * Layout and scroll position are updated separately by the caller.
+ *
+ * @param document The document widget
+ * @param current_page The zero-based current page number
+ */
+void zathura_document_widget_set_current_page_number(ZathuraDocumentWidget* document, unsigned int current_page);
+
+/**
+ * Returns the current zoom value of the document view.
+ *
+ * @param document The document widget
+ * @return Current zoom value
+ */
+double zathura_document_widget_get_zoom(ZathuraDocumentWidget* document);
+
+/**
+ * Sets the new zoom value of the document view.
+ * Layout and rendering must be refreshed after changing the zoom.
+ *
+ * @param document The document widget
+ * @param zoom The new zoom value
+ */
+void zathura_document_widget_set_zoom(ZathuraDocumentWidget* document, double zoom);
+
+/**
+ * Returns the current scale of the document view, based on zoom and viewport
+ * PPI. If the viewport PPI is unknown, a value of 100 PPI is used.
+ *
+ * @param document The document widget
+ * @return The scale in logical pixels per point
+ */
+double zathura_document_widget_get_scale(ZathuraDocumentWidget* document);
+
+/**
+ * Returns the rotation of the document view.
+ *
+ * @param document The document widget
+ * @return The rotation in degrees (0, 90, 180 or 270)
+ */
+unsigned int zathura_document_widget_get_rotation(ZathuraDocumentWidget* document);
+
+/**
+ * Sets the new rotation of the document view.
+ * The rotation is rounded clockwise to a multiple of 90 degrees modulo 360.
+ *
+ * @param document The document widget
+ * @param rotation The new rotation in degrees
+ */
+void zathura_document_widget_set_rotation(ZathuraDocumentWidget* document, unsigned int rotation);
+
+/**
+ * Returns the page numbering offset of the document view.
+ *
+ * @param document The document widget
+ * @return The page offset
+ */
+int zathura_document_widget_get_page_offset(ZathuraDocumentWidget* document);
+
+/**
+ * Sets the new page numbering offset of the document view.
+ * This offset is independent of the document's intrinsic page labels.
+ *
+ * @param document The document widget
+ * @param page_offset The new page offset
+ */
+void zathura_document_widget_set_page_offset(ZathuraDocumentWidget* document, unsigned int page_offset);
+
+/**
+ * Sets the viewport PPI (logical pixels per inch: the resolution of the
+ * monitor after device scaling).
+ *
+ * @param document The document widget
+ * @param ppi The viewport PPI
+ */
+void zathura_document_widget_set_viewport_ppi(ZathuraDocumentWidget* document, double ppi);
+
+/**
+ * Returns the viewport PPI (logical pixels per inch: the resolution of the
+ * monitor after device scaling).
+ *
+ * @param document The document widget
+ * @return The viewport PPI
+ */
+double zathura_document_widget_get_viewport_ppi(ZathuraDocumentWidget* document);
+
+/**
+ * Sets the device scale used for rendering to the screen (e.g. for HiDPI).
+ * The same scale is used for both axes and may be fractional. Non-finite
+ * values and values at or below DBL_EPSILON are ignored.
+ *
+ * @param document The document widget
+ * @param scale The new device scale
+ */
+void zathura_document_widget_set_device_scale(ZathuraDocumentWidget* document, double scale);
+
+/**
+ * Returns the current device scale, which is guaranteed to be positive.
+ *
+ * @param document The document widget
+ * @return The device scale, or 1.0 if document is NULL
+ */
+double zathura_document_widget_get_device_scale(ZathuraDocumentWidget* document);
+
+/**
  * Enable or disable document recoloring.
  *
  * A changed value invalidates rendered page surfaces and cached thumbnails.

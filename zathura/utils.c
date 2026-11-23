@@ -21,6 +21,7 @@
 #include "document.h"
 #include "document-widget.h"
 #include "page.h"
+#include "page-widget.h"
 #include "render.h"
 #include "plugin.h"
 #include "content-type.h"
@@ -195,7 +196,7 @@ static gboolean scroll_index_to_cursor(void* data) {
 void index_scroll_to_current_page(zathura_t* zathura) {
   GtkListView* view            = get_list_view(zathura);
   GtkSelectionModel* selection = gtk_list_view_get_model(view);
-  unsigned int current_page    = zathura_document_get_current_page_number(zathura_get_document(zathura));
+  unsigned int current_page    = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
 
   /* the selection wraps a GtkTreeListModel; its underlying model is the root GListStore */
   GtkTreeListModel* tree_model = GTK_TREE_LIST_MODEL(gtk_single_selection_get_model(GTK_SINGLE_SELECTION(selection)));
@@ -237,31 +238,6 @@ zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int
   default:
     return rectangle;
   }
-
-  return tmp;
-}
-
-zathura_rectangle_t recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle) {
-  if (page == NULL) {
-    return rectangle;
-  }
-
-  zathura_document_t* document = zathura_page_get_document(page);
-  if (document == NULL) {
-    return rectangle;
-  }
-
-  double page_height = zathura_page_get_height(page);
-  double page_width  = zathura_page_get_width(page);
-  double scale       = zathura_document_get_scale(document);
-
-  zathura_rectangle_t tmp =
-      rotate_rectangle(rectangle, (zathura_document_get_rotation(document) + zathura_page_get_rotation(page)) % 360,
-                       page_height, page_width);
-  tmp.x1 *= scale;
-  tmp.x2 *= scale;
-  tmp.y1 *= scale;
-  tmp.y2 *= scale;
 
   return tmp;
 }
@@ -698,7 +674,7 @@ bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disab
   girara_session_t* session = zathura->ui.session;
 
   const unsigned int num_pages = zathura_document_get_number_of_pages(zathura->document);
-  const unsigned int cur_page  = zathura_document_get_current_page_number(zathura->document);
+  const unsigned int cur_page  = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
   ZathuraPageWidget* cur_page_widget =
       zathura_page_get_widget(zathura, zathura_document_get_page(zathura->document, cur_page));
   bool new_search             = argument->data != NULL;
@@ -782,7 +758,8 @@ bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disab
 
     /* Need to adjust rectangle to page scale and orientation */
     zathura_rectangle_t* rect     = girara_list_nth(results, target_idx);
-    zathura_rectangle_t rectangle = recalc_rectangle(target_page, *rect);
+    zathura_rectangle_t rectangle = zathura_page_widget_recalc_rectangle(
+        zathura_document_widget_ensure_page(zathura->ui.document_widget, zathura_page_get_index(target_page)), *rect);
 
     bool search_hadjust = true;
     girara_setting_get(session, "search-hadjust", &search_hadjust);
@@ -819,7 +796,7 @@ bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disab
     position_set(zathura, pos_x, pos_y);
     zathura_jumplist_add(zathura);
 
-    unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
+    unsigned int current_page_number = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
     zathura_set_current_search_result_previous_pages(zathura, current_page_number);
     zathura_modify_current_search_result(zathura, target_idx + 1);
 

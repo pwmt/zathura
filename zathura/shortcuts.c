@@ -302,7 +302,7 @@ bool sc_goto(girara_session_t* session, girara_argument_t* argument, girara_even
   unsigned int page_id;
   if (t) {
     /* add offset */
-    t += zathura_document_get_page_offset(document);
+    t += zathura_document_widget_get_page_offset(zathura->ui.document_widget);
     page_id = t - 1;
   } else if (argument->n == TOP) {
     page_id = 0;
@@ -433,7 +433,7 @@ bool sc_navigate(girara_session_t* session, girara_argument_t* argument, girara_
   zathura_document_t* document = zathura_get_document(zathura);
 
   int number_of_pages = zathura_document_get_number_of_pages(document);
-  int new_page        = zathura_document_get_current_page_number(document);
+  int new_page        = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
 
   bool scroll_wrap = false;
   girara_setting_get(session, "scroll-wrap", &scroll_wrap);
@@ -530,8 +530,7 @@ bool sc_rotate(girara_session_t* session, girara_argument_t* argument, girara_ev
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(zathura_has_document(zathura), false);
 
-  zathura_document_t* document   = zathura_get_document(zathura);
-  const unsigned int page_number = zathura_document_get_current_page_number(document);
+  const unsigned int page_number = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
 
   unsigned int angle = 90;
   if (argument && argument->n == ROTATE_CCW) {
@@ -540,8 +539,8 @@ bool sc_rotate(girara_session_t* session, girara_argument_t* argument, girara_ev
 
   /* update rotate value */
   t                     = (t == 0) ? 1 : t;
-  unsigned int rotation = zathura_document_get_rotation(document);
-  zathura_document_set_rotation(document, (rotation + angle * t) % 360);
+  unsigned int rotation = zathura_document_widget_get_rotation(zathura->ui.document_widget);
+  zathura_document_widget_set_rotation(zathura->ui.document_widget, (rotation + angle * t) % 360);
 
   /* update scale */
   girara_argument_t new_argument = {.n    = zathura_document_widget_get_adjust_mode(zathura->ui.document_widget),
@@ -563,8 +562,7 @@ bool sc_page_rotate(girara_session_t* session, girara_argument_t* argument, gira
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(zathura_has_document(zathura), false);
 
-  zathura_document_t* document   = zathura_get_document(zathura);
-  const unsigned int page_number = zathura_document_get_current_page_number(document);
+  const unsigned int page_number = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
 
   unsigned int angle = 90;
   if (argument && argument->n == ROTATE_CCW) {
@@ -572,10 +570,11 @@ bool sc_page_rotate(girara_session_t* session, girara_argument_t* argument, gira
   }
 
   /* update rotate value */
-  t                     = (t == 0) ? 1 : t;
-  zathura_page_t* page  = zathura_document_get_page(document, page_number);
-  unsigned int rotation = zathura_page_get_rotation(page);
-  zathura_page_set_rotation(page, (rotation + angle * t) % 360);
+  t                       = (t == 0) ? 1 : t;
+  ZathuraPageWidget* page = zathura_document_widget_ensure_page(zathura->ui.document_widget, page_number);
+  g_return_val_if_fail(page != NULL, false);
+  unsigned int rotation = zathura_page_widget_get_rotation(page);
+  zathura_page_widget_set_rotation(page, (rotation + angle * t) % 360);
 
   /* update scale */
   girara_argument_t new_argument = {.n    = zathura_document_widget_get_adjust_mode(zathura->ui.document_widget),
@@ -604,7 +603,7 @@ static bool scroll_single_page_full(zathura_t* zathura, bool down) {
   const double step = (1.0 - overlap) * page_size;
 
   zathura_document_t* document = zathura_get_document(zathura);
-  const unsigned int page      = zathura_document_get_current_page_number(document);
+  const unsigned int page      = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
   const unsigned int npag      = zathura_document_get_number_of_pages(document);
 
   if (down) {
@@ -657,10 +656,9 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
   }
 
   /* Retrieve current page and position */
-  zathura_document_t* document = zathura_get_document(zathura);
-  const unsigned int page_id   = zathura_document_get_current_page_number(document);
-  double pos_x                 = zathura_document_widget_get_position_x(zathura->ui.document_widget);
-  double pos_y                 = zathura_document_widget_get_position_y(zathura->ui.document_widget);
+  const unsigned int page_id = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
+  double pos_x               = zathura_document_widget_get_position_x(zathura->ui.document_widget);
+  double pos_y               = zathura_document_widget_get_position_y(zathura->ui.document_widget);
 
   /* If PAGE_TOP or PAGE_BOTTOM, go there and we are done */
   if (argument->n == PAGE_TOP) {
@@ -874,7 +872,7 @@ bool sc_bisect(girara_session_t* session, girara_argument_t* argument, girara_ev
   g_return_val_if_fail(zathura_has_document(zathura), false);
 
   const unsigned int num_pages = zathura_document_get_number_of_pages(zathura->document);
-  const unsigned int cur_page  = zathura_document_get_current_page_number(zathura->document);
+  const unsigned int cur_page  = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
 
   /* process arguments */
   int direction;
@@ -1352,7 +1350,7 @@ bool sc_toggle_page_mode(girara_session_t* session, girara_argument_t* UNUSED(ar
     return false;
   }
 
-  unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
+  unsigned int page_id = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
 
   unsigned int pages_per_row = 1;
   girara_setting_get(zathura->ui.session, "pages-per-row", &pages_per_row);
@@ -1440,7 +1438,7 @@ bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* UNUSED
     gtk_window_unfullscreen(GTK_WINDOW(session->gtk.window));
 
     /* reset zoom */
-    zathura_document_set_zoom(zathura->document, zathura->shortcut.toggle_presentation_mode.zoom);
+    zathura_document_widget_set_zoom(zathura->ui.document_widget, zathura->shortcut.toggle_presentation_mode.zoom);
     zathura_document_widget_render_all(zathura->ui.document_widget);
     refresh_view(zathura);
 
@@ -1458,7 +1456,7 @@ bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* UNUSED
                        &zathura->shortcut.toggle_presentation_mode.first_page_column_list);
 
     /* back up zoom */
-    zathura->shortcut.toggle_presentation_mode.zoom = zathura_document_get_zoom(zathura->document);
+    zathura->shortcut.toggle_presentation_mode.zoom = zathura_document_widget_get_zoom(zathura->ui.document_widget);
 
     // backup layout mode
     g_object_get(zathura->ui.document_widget, "layout-mode", &zathura->shortcut.toggle_presentation_mode.layout_mode,
@@ -1559,38 +1557,38 @@ bool sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_even
 
   const int nt           = (t == 0) ? 1 : t;
   const double zoom_step = MAX(DBL_EPSILON, 1.0 + value / 100.0 * nt);
-  const double old_zoom  = zathura_document_get_zoom(zathura->document);
+  const double old_zoom  = zathura_document_widget_get_zoom(zathura->ui.document_widget);
 
   /* specify new zoom value */
   if (argument->n == ZOOM_IN) {
     girara_debug("Increasing zoom by %0.2f.", zoom_step - 1.0);
-    zathura_document_set_zoom(zathura->document, old_zoom * zoom_step);
+    zathura_document_widget_set_zoom(zathura->ui.document_widget, old_zoom * zoom_step);
   } else if (argument->n == ZOOM_OUT) {
     girara_debug("Decreasing zoom by %0.2f.", zoom_step - 1.0);
-    zathura_document_set_zoom(zathura->document, old_zoom / zoom_step);
+    zathura_document_widget_set_zoom(zathura->ui.document_widget, old_zoom / zoom_step);
   } else if (argument->n == ZOOM_SPECIFIC) {
     if (t == 0) {
       girara_debug("Setting zoom to 1.");
-      zathura_document_set_zoom(zathura->document, 1.0);
+      zathura_document_widget_set_zoom(zathura->ui.document_widget, 1.0);
     } else {
       girara_debug("Setting zoom to %0.2f.", t / 100.0);
-      zathura_document_set_zoom(zathura->document, t / 100.0);
+      zathura_document_widget_set_zoom(zathura->ui.document_widget, t / 100.0);
     }
   } else if (argument->n == ZOOM_SMOOTH) {
     const double dy = event ? event->y : 1.0;
     const double z  = pow(zoom_step, -dy);
     girara_debug("Increasing zoom by %0.2f.", z - 1.0);
-    zathura_document_set_zoom(zathura->document, old_zoom * z);
+    zathura_document_widget_set_zoom(zathura->ui.document_widget, old_zoom * z);
   } else {
     girara_debug("Setting zoom to 1.");
-    zathura_document_set_zoom(zathura->document, 1.0);
+    zathura_document_widget_set_zoom(zathura->ui.document_widget, 1.0);
   }
 
   /* zoom limitations */
-  const double zoom = zathura_document_get_zoom(zathura->document);
-  zathura_document_set_zoom(zathura->document, zathura_correct_zoom_value(session, zoom));
+  const double zoom = zathura_document_widget_get_zoom(zathura->ui.document_widget);
+  zathura_document_widget_set_zoom(zathura->ui.document_widget, zathura_correct_zoom_value(session, zoom));
 
-  const double new_zoom = zathura_document_get_zoom(zathura->document);
+  const double new_zoom = zathura_document_widget_get_zoom(zathura->ui.document_widget);
   if (fabs(new_zoom - old_zoom) <= DBL_EPSILON) {
     girara_debug("New and old zoom level are too close: %0.2f vs. %0.2f", new_zoom, old_zoom);
     return false;
@@ -1640,7 +1638,7 @@ bool sc_exec(girara_session_t* session, girara_argument_t* argument, girara_even
 
   if (zathura_has_document(zathura)) {
     const char* path  = zathura_document_get_path(zathura->document);
-    unsigned int page = zathura_document_get_current_page_number(zathura->document);
+    unsigned int page = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
     char page_buf[G_ASCII_DTOSTR_BUF_SIZE];
     g_ascii_dtostr(page_buf, G_ASCII_DTOSTR_BUF_SIZE, page + 1);
 
@@ -1679,43 +1677,44 @@ bool sc_zoom_page(girara_session_t* session, girara_argument_t* argument, girara
   unsigned int value = 1;
   girara_setting_get(zathura->ui.session, "zoom-step", &value);
 
-  unsigned int current_page = zathura_document_get_current_page_number(zathura->document);
-  zathura_page_t* page      = zathura_document_get_page(zathura->document, current_page);
+  unsigned int current_page = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
+  ZathuraPageWidget* page   = zathura_document_widget_ensure_page(zathura->ui.document_widget, current_page);
+  g_return_val_if_fail(page != NULL, false);
 
   const int nt           = (t == 0) ? 1 : t;
   const double zoom_step = MAX(DBL_EPSILON, 1.0 + value / 100.0 * nt);
-  const double old_zoom  = zathura_page_get_zoom(page);
+  const double old_zoom  = zathura_page_widget_get_zoom(page);
 
   /* specify new zoom value */
   if (argument->n == ZOOM_IN) {
     girara_debug("Increasing page %u zoom by %0.2f.", current_page, zoom_step - 1.0);
-    zathura_page_set_zoom(page, old_zoom * zoom_step);
+    zathura_page_widget_set_zoom(page, old_zoom * zoom_step);
   } else if (argument->n == ZOOM_OUT) {
     girara_debug("Decreasing page %u zoom by %0.2f.", current_page, zoom_step - 1.0);
-    zathura_page_set_zoom(page, old_zoom / zoom_step);
+    zathura_page_widget_set_zoom(page, old_zoom / zoom_step);
   } else if (argument->n == ZOOM_SPECIFIC) {
     if (t == 0) {
       girara_debug("Setting page %u zoom to 1.", current_page);
-      zathura_page_set_zoom(page, 1.0);
+      zathura_page_widget_set_zoom(page, 1.0);
     } else {
       girara_debug("Setting page %u zoom to %0.2f.", current_page, t / 100.0);
-      zathura_page_set_zoom(page, t / 100.0);
+      zathura_page_widget_set_zoom(page, t / 100.0);
     }
   } else if (argument->n == ZOOM_SMOOTH) {
     const double dy = event ? event->y : 1.0;
     const double z  = pow(zoom_step, -dy);
     girara_debug("Increasing page %u zoom by %0.2f.", current_page, z - 1.0);
-    zathura_page_set_zoom(page, old_zoom * z);
+    zathura_page_widget_set_zoom(page, old_zoom * z);
   } else {
     girara_debug("Setting page %u zoom to 1.", current_page);
-    zathura_page_set_zoom(page, 1.0);
+    zathura_page_widget_set_zoom(page, 1.0);
   }
 
   /* zoom limitations */
-  const double zoom = zathura_page_get_zoom(page);
-  zathura_page_set_zoom(page, zathura_correct_zoom_value(session, zoom));
+  const double zoom = zathura_page_widget_get_zoom(page);
+  zathura_page_widget_set_zoom(page, zathura_correct_zoom_value(session, zoom));
 
-  const double new_zoom = zathura_page_get_zoom(page);
+  const double new_zoom = zathura_page_widget_get_zoom(page);
   if (fabs(new_zoom - old_zoom) <= DBL_EPSILON) {
     girara_debug("New and old page %u zoom level are too close: %0.2f vs. %0.2f", current_page, new_zoom, old_zoom);
     return false;
@@ -1746,9 +1745,8 @@ bool sc_snap_to_page(girara_session_t* session, girara_argument_t* UNUSED(argume
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(zathura_has_document(zathura), false);
-  zathura_document_t* document = zathura->document;
 
-  int page = zathura_document_get_current_page_number(document);
+  int page = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
   return page_set(zathura, page, -1, -1, false);
 }
 

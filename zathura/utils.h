@@ -53,16 +53,6 @@ void index_scroll_to_current_page(zathura_t* zathura);
 zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, double height, double width);
 
 /**
- * Calculates the new coordinates based on the rotation and scale level of the
- * document for the given rectangle
- *
- * @param page Page where the rectangle should be
- * @param rectangle The rectangle
- * @return New rectangle
- */
-zathura_rectangle_t recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle);
-
-/**
  * Returns the page widget of the page
  *
  * @param zathura The zathura instance

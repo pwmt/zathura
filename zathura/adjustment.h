@@ -12,28 +12,29 @@
  * Calculate the page size according to the current scaling and rotation if
  * desired.
  *
- * @param document the document
+ * @param widget the document widget
  * @param page the page
  * @param page_height the scaled and rotated height
  * @param page_width the scaled and rotated width
  * @param rotate honor page's rotation
  * @return real scale after rounding
  */
-double page_calc_height_width(zathura_document_t* document, zathura_page_t* page, unsigned int* page_height,
+double page_calc_height_width(ZathuraDocumentWidget* widget, zathura_page_t* page, unsigned int* page_height,
                               unsigned int* page_width, bool rotate);
 
 /**
- * Calculate a page relative position after a rotation. The positions x y are
- * relative to a page, i.e. 0=top of page, 1=bottom of page. They are NOT
- * relative to the entire document.
+ * Calculates rounded page dimensions from a scale and rotation without
+ * accessing widgets.
  *
- * @param document the document
- * @param x the x coordinates on the unrotated page
- * @param y the y coordinates on the unrotated page
- * @param xn the x coordinates after rotation
- * @param yn the y coordinates after rotation
+ * @param page The page object
+ * @param scale The scale in logical pixels per point
+ * @param rotation The rotation in degrees (0, 90, 180 or 270)
+ * @param page_height The scaled and rotated height
+ * @param page_width The scaled and rotated width
+ * @return The effective scale
  */
-void page_calc_position(zathura_document_t* document, double x, double y, double* xn, double* yn);
+double page_calc_size(zathura_page_t* page, double scale, unsigned int rotation, unsigned int* page_height,
+                      unsigned int* page_width);
 
 /**
  * Converts a relative position within the document to a page number.

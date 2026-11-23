@@ -46,22 +46,6 @@ ZATHURA_PLUGIN_API zathura_document_t* zathura_page_get_document(zathura_page_t*
 ZATHURA_PLUGIN_API unsigned int zathura_page_get_index(zathura_page_t* page);
 
 /**
- * Returns the rotation of the page
- *
- * @param page The page object
- * @return Rotation of the page, or 0 if page is NULL
- */
-ZATHURA_PLUGIN_API unsigned int zathura_page_get_rotation(zathura_page_t* page);
-
-/**
- * Sets the new rotation of the page
- *
- * @param page The page object
- * @param rotate The new rotation of the page
- */
-ZATHURA_PLUGIN_API void zathura_page_set_rotation(zathura_page_t* page, unsigned int rotate);
-
-/**
  * Returns the width of the page
  *
  * @param page The page object
@@ -94,40 +78,6 @@ ZATHURA_PLUGIN_API double zathura_page_get_height(zathura_page_t* page);
  * @param height The new height of the page
  */
 ZATHURA_PLUGIN_API void zathura_page_set_height(zathura_page_t* page, double height);
-
-/**
- * Returns the zoom of the page
- *
- * @param page The page object
- * @return Zoom of the page
- * @return -1 If an error occurred
- */
-ZATHURA_PLUGIN_API double zathura_page_get_zoom(zathura_page_t* page);
-
-/**
- * Sets the new zoom of the page
- *
- * @param page The page object
- * @param zoom The new zoom of the page
- */
-ZATHURA_PLUGIN_API void zathura_page_set_zoom(zathura_page_t* page, double zoom);
-
-/**
- * Returns the visibility of the page
- *
- * @param page The page object
- * @return true if the page is visible
- * @return false if the page is hidden
- */
-ZATHURA_PLUGIN_API bool zathura_page_get_visibility(zathura_page_t* page);
-
-/**
- * Sets the visibility of the page
- *
- * @param page The page object
- * @param visibility The new visibility value
- */
-ZATHURA_PLUGIN_API void zathura_page_set_visibility(zathura_page_t* page, bool visibility);
 
 /**
  * Returns the custom data

@@ -219,11 +219,10 @@ void zathura_update_view_ppi(zathura_t* zathura) {
     return;
   }
 
-  zathura_document_t* document = zathura_get_document(zathura);
-  const double current_ppi     = zathura_document_get_viewport_ppi(document);
+  const double current_ppi = zathura_document_widget_get_viewport_ppi(zathura->ui.document_widget);
   if (fabs(ppi - current_ppi) > DBL_EPSILON) {
     girara_debug("view ppi: %0.2f", ppi);
-    zathura_document_set_viewport_ppi(document, ppi);
+    zathura_document_widget_set_viewport_ppi(zathura->ui.document_widget, ppi);
 
     if (zathura->ui.document_widget) {
       zathura_document_widget_adjust_view(zathura->ui.document_widget);
@@ -816,16 +815,10 @@ static void cb_document_widget_page_widgets_loaded(ZathuraDocumentWidget* docume
   cmd_search(zathura->ui.session, input, &argument);
 }
 
-// Create and configure a detached document widget for preparation.
-static ZathuraDocumentWidget* document_widget_create(zathura_t* zathura, zathura_document_t* document,
-                                                     unsigned int page_v_padding, unsigned int page_h_padding,
-                                                     unsigned int pages_per_row, unsigned int first_page_column,
-                                                     bool pages_right_to_left) {
-  GtkWidget* widget = zathura_document_widget_new(zathura, document);
-  if (!widget) {
-    return NULL;
-  }
-
+// Configure the detached view after restoring its document-specific state.
+static void document_widget_configure(zathura_t* zathura, ZathuraDocumentWidget* view, unsigned int page_v_padding,
+                                      unsigned int page_h_padding, unsigned int pages_per_row,
+                                      unsigned int first_page_column, bool pages_right_to_left) {
   // Apply the startup preference to the first document widget
   bool single_page_mode = false;
   girara_setting_get(zathura->ui.session, "single-page-mode", &single_page_mode);
@@ -836,16 +829,13 @@ static ZathuraDocumentWidget* document_widget_create(zathura_t* zathura, zathura
     g_object_get(zathura->ui.document_widget, "layout-mode", &mode, NULL);
   }
 
-  ZathuraDocumentWidget* view = g_object_ref_sink(ZATHURA_DOCUMENT_WIDGET(widget));
   zathura_document_widget_set_page_layout(view, page_v_padding, page_h_padding, pages_per_row, first_page_column);
   g_object_set(view, "pages-right-to-left", pages_right_to_left, NULL);
   zathura_document_widget_refresh_layout(view);
   g_object_set(view, "layout-mode", mode, NULL);
   g_signal_connect(view, "position-changed", G_CALLBACK(cb_document_widget_position_changed), zathura);
   g_signal_connect(view, "page-widgets-loaded", G_CALLBACK(cb_document_widget_page_widgets_loaded), zathura);
-  gtk_widget_set_visible(widget, TRUE);
-
-  return view;
+  gtk_widget_set_visible(GTK_WIDGET(view), TRUE);
 }
 
 // Render the focused page once synchronously after the scale is settled
@@ -955,7 +945,7 @@ static gboolean reload_search(gpointer data) {
   zathura_error_t error = ZATHURA_ERROR_OK;
 
   unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
-  unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
+  unsigned int current_page_number = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
 
   /* reset search results */
   zathura->global.total_search_results  = 0;
@@ -1007,7 +997,7 @@ static void document_view_install(zathura_t* zathura, document_view_t* pending, 
   ZathuraDocumentWidget* widget = pending->widget;
 
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
-  const unsigned int page            = zathura_document_get_current_page_number(document);
+  const unsigned int page            = zathura_document_widget_get_current_page_number(widget);
 
   // Commit the prepared view.
   document_view_t previous = {zathura->document, zathura->ui.document_widget};
@@ -1104,11 +1094,11 @@ static void document_replacement_ready(ZathuraDocumentWidget* widget, zathura_t*
   document_replacement_disconnect(widget, zathura);
 
   // Capture live navigation immediately before replacing the active view.
-  const unsigned int page                 = zathura_document_get_current_page_number(zathura->document);
-  const double position_x                 = zathura_document_widget_get_position_x(zathura->ui.document_widget);
-  const double position_y                 = zathura_document_widget_get_position_y(zathura->ui.document_widget);
-  const double zoom                       = zathura_document_get_zoom(zathura->document);
-  const unsigned int rotation             = zathura_document_get_rotation(zathura->document);
+  const unsigned int page     = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
+  const double position_x     = zathura_document_widget_get_position_x(zathura->ui.document_widget);
+  const double position_y     = zathura_document_widget_get_position_y(zathura->ui.document_widget);
+  const double zoom           = zathura_document_widget_get_zoom(zathura->ui.document_widget);
+  const unsigned int rotation = zathura_document_widget_get_rotation(zathura->ui.document_widget);
   const zathura_adjust_mode_t adjust_mode = zathura_document_widget_get_adjust_mode(zathura->ui.document_widget);
 
   document_widget_mode_t layout_mode;
@@ -1120,12 +1110,12 @@ static void document_replacement_ready(ZathuraDocumentWidget* widget, zathura_t*
 
   // Apply changes made while the replacement was rendering to the installed view.
   bool zoom_or_rotation_changed = false;
-  if (zathura_document_get_zoom(zathura->document) != zoom) {
-    zathura_document_set_zoom(zathura->document, zoom);
+  if (zathura_document_widget_get_zoom(zathura->ui.document_widget) != zoom) {
+    zathura_document_widget_set_zoom(zathura->ui.document_widget, zoom);
     zoom_or_rotation_changed = true;
   }
-  if (zathura_document_get_rotation(zathura->document) != rotation) {
-    zathura_document_set_rotation(zathura->document, rotation);
+  if (zathura_document_widget_get_rotation(zathura->ui.document_widget) != rotation) {
+    zathura_document_widget_set_rotation(zathura->ui.document_widget, rotation);
     zoom_or_rotation_changed = true;
   }
   if (zoom_or_rotation_changed) {
@@ -1236,6 +1226,13 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     return false;
   }
 
+  pending.widget = ZATHURA_DOCUMENT_WIDGET(zathura_document_widget_new(zathura, document));
+  if (!pending.widget) {
+    return false;
+  }
+  g_object_ref_sink(pending.widget);
+  ZathuraDocumentWidget* widget = pending.widget;
+
   // Read file info from database
   zathura_fileinfo_t file_info = {
       .current_page           = 0,
@@ -1262,13 +1259,13 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   girara_debug("checking file info: found = %s", known_file ? "true" : "false");
 
   // Set page offset
-  zathura_document_set_page_offset(document, file_info.page_offset);
+  zathura_document_widget_set_page_offset(widget, file_info.page_offset);
 
   // check for valid zoom value
   if (file_info.zoom <= DBL_EPSILON) {
     file_info.zoom = 1;
   }
-  zathura_document_set_zoom(document, zathura_correct_zoom_value(zathura->ui.session, file_info.zoom));
+  zathura_document_widget_set_zoom(widget, zathura_correct_zoom_value(zathura->ui.session, file_info.zoom));
 
   // Check current page number; if it wasn't specified on the command-line, get it from file_info
   if (page_number == ZATHURA_PAGE_NUMBER_UNSPECIFIED) {
@@ -1281,18 +1278,18 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
 
   if ((unsigned)page_number >= number_of_pages) {
     girara_warning("document info: '%s' has an invalid page number", file_path);
-    zathura_document_set_current_page_number(document, 0);
+    zathura_document_widget_set_current_page_number(widget, 0);
   } else {
     girara_debug("setting current page: %d", page_number);
-    zathura_document_set_current_page_number(document, page_number);
+    zathura_document_widget_set_current_page_number(widget, page_number);
   }
 
   // check for valid rotation
   if (file_info.rotation % 90 != 0) {
     girara_warning("document info: '%s' has an invalid rotation", file_path);
-    zathura_document_set_rotation(document, 0);
+    zathura_document_widget_set_rotation(widget, 0);
   } else {
-    zathura_document_set_rotation(document, file_info.rotation % 360);
+    zathura_document_widget_set_rotation(widget, file_info.rotation % 360);
   }
 
   // jump to first page if setting enabled
@@ -1300,11 +1297,11 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   girara_setting_get(zathura->ui.session, "open-first-page", &always_first_page);
   if (always_first_page == true) {
     girara_debug("setting current page: 0 (always open first page)");
-    zathura_document_set_current_page_number(document, 0);
+    zathura_document_widget_set_current_page_number(widget, 0);
   }
 
   // Parse the displayed page and size the others from it until they are parsed
-  const unsigned int current_page_number = zathura_document_get_current_page_number(document);
+  const unsigned int current_page_number = zathura_document_widget_get_current_page_number(widget);
   zathura_page_t* current_page           = zathura_document_get_page(document, current_page_number);
   if (!current_page || !zathura_page_load(current_page, NULL)) {
     girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to parse the displayed page of the document"));
@@ -1326,10 +1323,10 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   GdkSurface* surface = native != NULL ? gtk_native_get_surface(native) : NULL;
   const double device_factor =
       surface != NULL ? gdk_surface_get_scale(surface) : gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
-  zathura_document_set_device_factors(document, device_factor, device_factor);
+  zathura_document_widget_set_device_scale(widget, device_factor);
   double ppi = 0.0;
   if (get_view_ppi(zathura, &ppi)) {
-    zathura_document_set_viewport_ppi(document, ppi);
+    zathura_document_widget_set_viewport_ppi(widget, ppi);
   }
 
   // Set view mode
@@ -1349,17 +1346,11 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
 
   // Find value for first_page_column
   const unsigned int first_page_column = find_first_page_column(first_page_column_list, pages_per_row);
-  // Create and fully configure the view only once there is a document to display
-  pending.widget = document_widget_create(zathura, document, page_v_padding, page_h_padding, pages_per_row,
-                                          first_page_column, file_info.page_right_to_left);
-  if (!pending.widget) {
-    return false;
-  }
-
-  ZathuraDocumentWidget* widget = pending.widget;
+  document_widget_configure(zathura, widget, page_v_padding, page_h_padding, pages_per_row, first_page_column,
+                            file_info.page_right_to_left);
   // The blocks below can change the current page number due to callbacks that are being executed. So we store the
   // page number here and reset it below.
-  const unsigned int page = zathura_document_get_current_page_number(document);
+  const unsigned int page = zathura_document_widget_get_current_page_number(widget);
   // Apply open adjustment
   if (!known_file) {
     g_autofree char* adjust_open = NULL;
@@ -1565,31 +1556,28 @@ bool document_save(zathura_t* zathura, const char* path, bool overwrite) {
   return true;
 }
 
-static zathura_fileinfo_t zathura_get_document_fileinfo(zathura_t* zathura, zathura_document_t* document,
-                                                        ZathuraDocumentWidget* document_widget) {
+zathura_fileinfo_t zathura_get_fileinfo(zathura_t* zathura) {
+  ZathuraDocumentWidget* document_widget = zathura->ui.document_widget;
   /* Caller needs to g_free(file_info.first_page_column_list) */
 
   zathura_fileinfo_t file_info = {
-      .current_page           = zathura_document_get_current_page_number(document),
-      .page_offset            = zathura_document_get_page_offset(document),
-      .zoom                   = zathura_document_get_zoom(document),
-      .rotation               = zathura_document_get_rotation(document),
-      .pages_per_row          = 1,
-      .first_page_column_list = "1:2",
+      .current_page           = zathura_document_widget_get_current_page_number(document_widget),
+      .page_offset            = zathura_document_widget_get_page_offset(document_widget),
+      .zoom                   = zathura_document_widget_get_zoom(document_widget),
+      .rotation               = zathura_document_widget_get_rotation(document_widget),
+      .pages_per_row          = zathura_document_widget_get_pages_per_row(document_widget),
+      .first_page_column_list = NULL,
       .page_right_to_left     = false,
       .position_x             = zathura_document_widget_get_position_x(document_widget),
       .position_y             = zathura_document_widget_get_position_y(document_widget),
   };
 
-  girara_setting_get(zathura->ui.session, "pages-per-row", &file_info.pages_per_row);
   girara_setting_get(zathura->ui.session, "first-page-column", &file_info.first_page_column_list);
-  girara_setting_get(zathura->ui.session, "page-right-to-left", &file_info.page_right_to_left);
+  gboolean right_to_left = false;
+  g_object_get(document_widget, "pages-right-to-left", &right_to_left, NULL);
+  file_info.page_right_to_left = right_to_left;
 
   return file_info;
-}
-
-zathura_fileinfo_t zathura_get_fileinfo(zathura_t* zathura) {
-  return zathura_get_document_fileinfo(zathura, zathura_get_document(zathura), zathura->ui.document_widget);
 }
 
 static void save_fileinfo_to_db(zathura_t* zathura) {
@@ -1715,7 +1703,7 @@ bool page_set(zathura_t* zathura, unsigned int page_id, double position_x, doubl
     return false;
   }
 
-  zathura_document_set_current_page_number(document, page_id);
+  zathura_document_widget_set_current_page_number(zathura->ui.document_widget, page_id);
   zathura_document_widget_update_mode(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget));
 
   bool continuous_hist_save = false;
@@ -1741,7 +1729,7 @@ void statusbar_page_number_update(zathura_t* zathura) {
   zathura_document_t* document = zathura_get_document(zathura);
   if (document != NULL) {
     unsigned int number_of_pages     = zathura_document_get_number_of_pages(document);
-    unsigned int current_page_number = zathura_document_get_current_page_number(document);
+    unsigned int current_page_number = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
     unsigned int page_number_percent = number_of_pages ? 100 * (current_page_number + 1) / number_of_pages : 0;
 
     zathura_page_t* page   = zathura_document_get_page(document, current_page_number);

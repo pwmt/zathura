@@ -38,9 +38,18 @@ GType zathura_renderer_get_type(void);
  */
 ZathuraRenderer* zathura_renderer_new(size_t cache_size);
 
-/* Render a page synchronously through the same locked path as the render thread.
- * The caller owns the returned surface and must destroy it. */
-cairo_surface_t* zathura_renderer_render_page(ZathuraRenderer* renderer, zathura_page_t* page);
+/**
+ * Renders a page synchronously through the same locked path as the render thread.
+ * The caller owns the returned surface and must destroy it.
+ *
+ * @param renderer The renderer
+ * @param page The page to render
+ * @param scale The combined document and page scale in logical pixels per point
+ * @param device_scale The uniform device scale used for rendering to the screen
+ * @return The rendered surface, or NULL on failure or if a render is already pending
+ */
+cairo_surface_t* zathura_renderer_render_page(ZathuraRenderer* renderer, zathura_page_t* page, double scale,
+                                              double device_scale);
 
 /**
  * Return whether recoloring is enabled.
@@ -162,10 +171,13 @@ ZathuraRenderRequest* zathura_render_request_new(ZathuraRenderer* renderer, zath
 /**
  * Add a page to the render thread list that should be rendered.
  *
- * @param request request object of the page that should be renderer
- * @param last_view_time last view time of the page
+ * @param request The render request for the page
+ * @param last_view_time The last view time of the page
+ * @param scale The combined document and page scale in logical pixels per point,
+ *   captured before queuing
+ * @param device_scale The uniform device scale, captured before queuing
  */
-void zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time);
+void zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time, double scale, double device_scale);
 
 /**
  * Abort an existing render request.

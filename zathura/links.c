@@ -15,6 +15,7 @@
 #include "document-widget.h"
 #include "utils.h"
 #include "page.h"
+#include "page-widget.h"
 #include "render.h"
 
 struct zathura_link_s {
@@ -225,11 +226,17 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
     return;
   }
 
-  const double old_zoom       = zathura_document_get_zoom(document);
-  double scale                = zathura_document_get_scale(document) * zathura_page_get_zoom(page);
+  ZathuraPageWidget* page_widget = zathura_document_widget_ensure_page(widget, link->target.page_number);
+  if (page_widget == NULL) {
+    return;
+  }
+  const double old_zoom       = zathura_document_widget_get_zoom(zathura->ui.document_widget);
+  double scale                = zathura_page_widget_get_scale(page_widget);
   const double width          = zathura_page_get_width(page);
   const double height         = zathura_page_get_height(page);
-  const unsigned int rotation = (zathura_document_get_rotation(document) + zathura_page_get_rotation(page)) % 360;
+  const unsigned int rotation = (zathura_document_widget_get_rotation(zathura->ui.document_widget) +
+                                 zathura_page_widget_get_rotation(page_widget)) %
+                                360;
 
   bool link_zoom = true;
   girara_setting_get(zathura->ui.session, "link-zoom", &link_zoom);
@@ -249,16 +256,18 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
 
   /* Preserve page-local viewport offsets for unspecified coordinates. */
   zathura_page_t* current_page =
-      zathura_document_get_page(document, zathura_document_get_current_page_number(document));
+      zathura_document_get_page(document, zathura_document_widget_get_current_page_number(zathura->ui.document_widget));
   if (mode == DOCUMENT_WIDGET_SINGLE) {
-    page_calc_height_width(document, current_page, &doc_height, &doc_width, true);
+    page_calc_height_width(widget, current_page, &doc_height, &doc_width, true);
   }
 
   double old_x = 0;
   double old_y = 0;
   zathura_document_widget_get_page_origin(widget, zathura_page_get_index(current_page), &old_x, &old_y);
 
-  const double old_scale = zathura_document_get_scale(document) * zathura_page_get_zoom(current_page);
+  const double old_scale =
+      zathura_document_widget_get_scale(zathura->ui.document_widget) *
+      zathura_page_widget_get_zoom(zathura_document_widget_get_page(widget, zathura_page_get_index(current_page)));
   old_x = (zathura_document_widget_get_position_x(widget) * doc_width - view_width / 2.0 - old_x) / old_scale;
   old_y = (zathura_document_widget_get_position_y(widget) * doc_height - view_height / 2.0 - old_y) / old_scale;
 
@@ -273,16 +282,16 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
     if (link->target.destination_type != ZATHURA_LINK_DESTINATION_XYZ || link->target.zoom > 0) {
       zoom = zathura_correct_zoom_value(zathura->ui.session, zoom);
       zathura_document_widget_set_adjust_mode(widget, ZATHURA_ADJUST_NONE);
-      zathura_document_set_zoom(document, zoom);
+      zathura_document_widget_set_zoom(zathura->ui.document_widget, zoom);
       zathura_document_widget_render_all(widget);
     }
   }
 
   // recompute positions at the actual zoom
-  scale = zathura_document_get_scale(document) * zathura_page_get_zoom(page);
+  scale = zathura_page_widget_get_scale(page_widget);
   calculate_link_destination_view(&link->target, width, height, rotation, view_width, view_height, scale, false, &view);
   if (mode == DOCUMENT_WIDGET_SINGLE) {
-    page_calc_height_width(document, page, &doc_height, &doc_width, true);
+    page_calc_height_width(widget, page, &doc_height, &doc_width, true);
   } else {
     zathura_document_widget_get_document_size(widget, &doc_height, &doc_width);
   }
@@ -317,7 +326,7 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
   }
   const double pos_y = (origin_y + center_y) / doc_height;
 
-  zathura_document_set_current_page_number(document, link->target.page_number);
+  zathura_document_widget_set_current_page_number(zathura->ui.document_widget, link->target.page_number);
   position_set(zathura, pos_x, pos_y);
   zathura_jumplist_add(zathura);
 }

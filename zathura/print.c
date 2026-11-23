@@ -8,6 +8,7 @@
 #include <glib/gi18n.h>
 
 #include "document.h"
+#include "document-widget.h"
 #include "page.h"
 #include "internal.h"
 
@@ -146,7 +147,8 @@ void print(zathura_t* zathura) {
   gtk_print_operation_set_job_name(print_operation, zathura_document_get_path(document));
   gtk_print_operation_set_allow_async(print_operation, TRUE);
   gtk_print_operation_set_n_pages(print_operation, zathura_document_get_number_of_pages(document));
-  gtk_print_operation_set_current_page(print_operation, zathura_document_get_current_page_number(document));
+  gtk_print_operation_set_current_page(print_operation,
+                                       zathura_document_widget_get_current_page_number(zathura->ui.document_widget));
   gtk_print_operation_set_use_full_page(print_operation, TRUE);
 
   if (zathura->print.settings) {

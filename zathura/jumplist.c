@@ -41,11 +41,10 @@ static void zathura_jumplist_save(zathura_t* zathura) {
   g_return_if_fail(zathura_has_document(zathura) == true);
 
   zathura_jump_t* cur = zathura_jumplist_current(zathura);
-  if (cur != NULL) {
-    zathura_document_t* document = zathura_get_document(zathura);
-    cur->x                       = zathura_document_widget_get_position_x(zathura->ui.document_widget);
-    cur->y                       = zathura_document_widget_get_position_y(zathura->ui.document_widget);
-    cur->page                    = zathura_document_get_current_page_number(document);
+  if (cur) {
+    cur->x    = zathura_document_widget_get_position_x(zathura->ui.document_widget);
+    cur->y    = zathura_document_widget_get_position_y(zathura->ui.document_widget);
+    cur->page = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
   }
 }
 

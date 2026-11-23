@@ -143,12 +143,11 @@ static void mark_add(zathura_t* zathura, int key) {
     return;
   }
 
-  zathura_document_t* document = zathura_get_document(zathura);
-  unsigned int page_id         = zathura_document_get_current_page_number(document);
-  double position_x            = zathura_document_widget_get_position_x(zathura->ui.document_widget);
-  double position_y            = zathura_document_widget_get_position_y(zathura->ui.document_widget);
+  unsigned int page_id = zathura_document_widget_get_current_page_number(zathura->ui.document_widget);
+  double position_x    = zathura_document_widget_get_position_x(zathura->ui.document_widget);
+  double position_y    = zathura_document_widget_get_position_y(zathura->ui.document_widget);
 
-  double zoom = zathura_document_get_zoom(document);
+  double zoom = zathura_document_widget_get_zoom(zathura->ui.document_widget);
 
   /* search for existing mark */
   for (size_t idx = 0; idx != girara_list_size(zathura->global.marks); ++idx) {
@@ -187,8 +186,8 @@ static void mark_evaluate(zathura_t* zathura, int key) {
     const zathura_mark_t* mark = girara_list_nth(zathura->global.marks, idx);
     if (mark && mark->key == key) {
       zathura_jumplist_add(zathura);
-      zathura_document_set_zoom(zathura_get_document(zathura),
-                                zathura_correct_zoom_value(zathura->ui.session, mark->zoom));
+      zathura_document_widget_set_zoom(zathura->ui.document_widget,
+                                       zathura_correct_zoom_value(zathura->ui.session, mark->zoom));
 
       zathura_document_widget_adjust_view(zathura->ui.document_widget);
       zathura_document_widget_render_all(zathura->ui.document_widget);

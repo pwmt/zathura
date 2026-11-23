@@ -11,6 +11,7 @@
 
 #include "zathura.h"
 #include "page.h"
+#include "page-widget.h"
 #include "document.h"
 #include "document-widget.h"
 #include "utils.h"
@@ -307,7 +308,8 @@ void synctex_highlight_rects(zathura_t* zathura, unsigned int page, girara_list_
     return;
   }
 
-  zathura_rectangle_t rectangle = recalc_rectangle(doc_page, *rect);
+  zathura_rectangle_t rectangle = zathura_page_widget_recalc_rectangle(
+      zathura_document_widget_ensure_page(zathura->ui.document_widget, zathura_page_get_index(doc_page)), *rect);
 
   /* compute the center of the rectangle, which will be aligned to the center
      of the viewport */
