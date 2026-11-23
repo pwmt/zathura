@@ -153,18 +153,24 @@ static void cb_app_startup(GApplication* app, gpointer data) {
   gtk_application_add_window(GTK_APPLICATION(app), GTK_WINDOW(ctx->zathura->ui.session->gtk.window));
 }
 
+static void app_open(zathura_app_ctx_t* ctx, GFile* file);
+
 static void cb_app_activate(GApplication* UNUSED(app), gpointer data) {
-  /* present the window when the app starts without a file */
   zathura_app_ctx_t* ctx = data;
+  if (ctx->raw_file != NULL) {
+    g_autoptr(GFile) file = g_file_new_for_commandline_arg(ctx->raw_file);
+    app_open(ctx, file);
+    return;
+  }
+
+  /* present the window when the app starts without a file */
   if (ctx->zathura && ctx->zathura->ui.session && ctx->zathura->ui.session->gtk.window) {
     gtk_window_present(GTK_WINDOW(ctx->zathura->ui.session->gtk.window));
   }
 }
 
-static void cb_app_open(GApplication* UNUSED(app), GFile** files, gint n_files, const gchar* UNUSED(hint),
-                        gpointer data) {
-  zathura_app_ctx_t* ctx = data;
-  if (!ctx->zathura || n_files < 1) {
+static void app_open(zathura_app_ctx_t* ctx, GFile* file) {
+  if (!ctx->zathura) {
     return;
   }
 
@@ -174,7 +180,7 @@ static void cb_app_open(GApplication* UNUSED(app), GFile** files, gint n_files, 
   if (!g_strcmp0(ctx->raw_file, "-")) {
     path = "-";
   } else {
-    gfile_path = g_file_get_path(files[0]);
+    gfile_path = g_file_get_path(file);
     /* g_file_get_path returns NULL for non-local URIs; fall back to the raw argument */
     path = gfile_path ? gfile_path : ctx->raw_file;
   }
@@ -424,27 +430,19 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
       .mode           = mode,
       .bookmark_name  = bookmark_name,
       .search_string  = search_string,
-      .raw_file       = NULL,
+      .raw_file       = file_idx ? argv[file_idx] : NULL,
       .page_number    = page_number,
       .argv           = argv,
       .zathura        = NULL,
   };
 
   /* a NULL application id keeps the process non-unique and skips D-Bus registration */
-  g_autoptr(GtkApplication) app = gtk_application_new(NULL, G_APPLICATION_NON_UNIQUE | G_APPLICATION_HANDLES_OPEN);
+  g_autoptr(GtkApplication) app = gtk_application_new(NULL, G_APPLICATION_NON_UNIQUE);
   g_signal_connect(app, "startup", G_CALLBACK(cb_app_startup), &ctx);
   g_signal_connect(app, "activate", G_CALLBACK(cb_app_activate), &ctx);
-  g_signal_connect(app, "open", G_CALLBACK(cb_app_open), &ctx);
   g_signal_connect(app, "shutdown", G_CALLBACK(cb_app_shutdown), &ctx);
 
-  /* feed g_application_run a minimal argv so it routes via open or activate */
-  char* run_argv[3] = {argv[0], NULL, NULL};
-  int run_argc      = 1;
-  if (file_idx) {
-    ctx.raw_file = argv[file_idx];
-    run_argv[1]  = argv[file_idx];
-    run_argc     = 2;
-  }
-
-  return g_application_run(G_APPLICATION(app), run_argc, run_argv);
+  /* the file is opened in activate since g_application_run would parse a name starting with a dash as an option */
+  char* run_argv[2] = {argv[0], NULL};
+  return g_application_run(G_APPLICATION(app), 1, run_argv);
 }
