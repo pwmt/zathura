@@ -611,6 +611,10 @@ gboolean cb_drop_file(GtkDropTarget* UNUSED(self), const GValue* value, double U
     return FALSE;
   }
 
+  if (zathura_unsaved_changes_warn(zathura) == true) {
+    return FALSE;
+  }
+
   if (zathura_has_document(zathura) == true) {
     document_close(zathura, false);
   }

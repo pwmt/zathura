@@ -516,6 +516,10 @@ bool sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument), g
     return false;
   }
 
+  if (zathura_unsaved_changes_warn(zathura) == true) {
+    return false;
+  }
+
   zathura_fileinfo_t file_info = zathura_get_fileinfo(zathura);
   const bool opened = document_open(zathura, zathura_filemonitor_get_filepath(zathura->file_monitor.monitor), NULL,
                                     zathura->file_monitor.password, file_info.current_page, &file_info);
@@ -1793,6 +1797,10 @@ bool sc_file_chooser(girara_session_t* session, girara_argument_t* UNUSED(argume
   girara_notify(session, GIRARA_ERROR, _("The file chooser is not permitted in strict sandbox mode"));
   return false;
 #endif
+
+  if (zathura_unsaved_changes_warn(zathura) == true) {
+    return false;
+  }
 
   g_autoptr(GtkFileDialog) dialog = gtk_file_dialog_new();
   gtk_file_dialog_set_title(dialog, _("Open file"));

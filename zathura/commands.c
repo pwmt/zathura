@@ -200,7 +200,7 @@ bool cmd_jumplist_list(girara_session_t* session, girara_list_t* argument_list) 
   return true;
 }
 
-bool cmd_close(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
+static bool close_document(girara_session_t* session, bool force) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
@@ -208,9 +208,21 @@ bool cmd_close(girara_session_t* session, girara_list_t* UNUSED(argument_list)) 
     return true;
   }
 
+  if (force == false && zathura_unsaved_changes_warn(zathura) == true) {
+    return false;
+  }
+
   document_close(zathura, false);
 
   return true;
+}
+
+bool cmd_close(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
+  return close_document(session, false);
+}
+
+bool cmd_close_force(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
+  return close_document(session, true);
 }
 
 bool cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
@@ -290,10 +302,14 @@ bool cmd_hlsearch(girara_session_t* session, girara_list_t* UNUSED(argument_list
   return true;
 }
 
-bool cmd_open(girara_session_t* session, girara_list_t* argument_list) {
+static bool open_document(girara_session_t* session, girara_list_t* argument_list, bool force) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
+
+  if (force == false && girara_list_size(argument_list) >= 1 && zathura_unsaved_changes_warn(zathura) == true) {
+    return false;
+  }
 
   const int argc = girara_list_size(argument_list);
   if (argc > 2) {
@@ -313,6 +329,14 @@ bool cmd_open(girara_session_t* session, girara_list_t* argument_list) {
   }
 
   return true;
+}
+
+bool cmd_open(girara_session_t* session, girara_list_t* argument_list) {
+  return open_document(session, argument_list, false);
+}
+
+bool cmd_open_force(girara_session_t* session, girara_list_t* argument_list) {
+  return open_document(session, argument_list, true);
 }
 
 bool cmd_quit(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {

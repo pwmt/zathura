@@ -838,11 +838,13 @@ void config_load_default(zathura_t* zathura) {
   girara_inputbar_command_add(gsession, "bjump",      NULL,   cmd_bookmark_open,       cc_bookmarks,  _("Jump to bookmark"));
   girara_inputbar_command_add(gsession, "jumplist",   NULL,   cmd_jumplist_list,       NULL,          _("Show recent jumps in jumplist"));
   girara_inputbar_command_add(gsession, "close",      NULL,   cmd_close,               NULL,          _("Close current file"));
+  girara_inputbar_command_add(gsession, "close!",     NULL,   cmd_close_force,         NULL,          _("Close current file and discard unsaved annotations"));
   girara_inputbar_command_add(gsession, "info",       NULL,   cmd_info,                NULL,          _("Show file information"));
   girara_inputbar_command_add(gsession, "exec",       NULL,   cmd_exec,                NULL,          _("Execute a command"));
   girara_inputbar_command_add(gsession, "!",          NULL,   cmd_exec,                NULL,          _("Execute a command")); /* like vim */
   girara_inputbar_command_add(gsession, "help",       NULL,   cmd_help,                NULL,          _("Show help"));
   girara_inputbar_command_add(gsession, "open",       "o",    cmd_open,                cc_open,       _("Open document"));
+  girara_inputbar_command_add(gsession, "open!",      "o!",   cmd_open_force,          cc_open,       _("Open document and discard unsaved annotations"));
   girara_inputbar_command_add(gsession, "quit",       "q",    cmd_quit,                NULL,          _("Close zathura"));
   girara_inputbar_command_add(gsession, "quit!",      "q!",   cmd_quit_force,          NULL,          _("Close zathura and discard unsaved annotations"));
   girara_inputbar_command_add(gsession, "print",      NULL,   cmd_print,               NULL,          _("Print document"));

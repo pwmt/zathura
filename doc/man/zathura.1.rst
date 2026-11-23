@@ -347,7 +347,10 @@ delmarks
   Delete a quickmark. Abbreviation: ``delm``.
 
 close
-  Close document.
+  Close document. Refuses while annotations are unsaved.
+
+close!
+  Close document and discard unsaved annotations.
 
 quit
   Quit zathura. Refuses to quit while annotations are unsaved. Abbreviation:
@@ -365,7 +368,12 @@ info
   Show document information.
 
 open
-  Open a document. Abbreviation: ``o``.
+  Open a document. Refuses while annotations of the current document are
+  unsaved. Abbreviation: ``o``.
+
+open!
+  Open a document and discard unsaved annotations of the current one.
+  Abbreviation: ``o!``.
 
 offset
   Set page offset.
