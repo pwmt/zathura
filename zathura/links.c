@@ -265,9 +265,12 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
   double old_y = 0;
   zathura_document_widget_get_page_origin(widget, zathura_page_get_index(current_page), &old_x, &old_y);
 
-  const double old_scale =
-      zathura_document_widget_get_scale(zathura->ui.document_widget) *
-      zathura_page_widget_get_zoom(zathura_document_widget_get_page(widget, zathura_page_get_index(current_page)));
+  ZathuraPageWidget* current_page_widget =
+      zathura_document_widget_get_page(widget, zathura_page_get_index(current_page));
+  double old_scale = zathura_document_widget_get_scale(widget);
+  if (current_page_widget) {
+    old_scale *= zathura_page_widget_get_zoom(current_page_widget);
+  }
   old_x = (zathura_document_widget_get_position_x(widget) * doc_width - view_width / 2.0 - old_x) / old_scale;
   old_y = (zathura_document_widget_get_position_y(widget) * doc_height - view_height / 2.0 - old_y) / old_scale;
 

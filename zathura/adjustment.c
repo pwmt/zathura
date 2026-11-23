@@ -35,9 +35,15 @@ double page_calc_height_width(ZathuraDocumentWidget* widget, zathura_page_t* pag
 
   ZathuraPageWidget* page_widget = zathura_document_widget_get_page(widget, zathura_page_get_index(page));
 
-  const double scale = zathura_document_widget_get_scale(widget) * zathura_page_widget_get_zoom(page_widget);
-  const unsigned int rotation =
-      rotate ? (zathura_document_widget_get_rotation(widget) + zathura_page_widget_get_rotation(page_widget)) % 360 : 0;
+  double scale          = zathura_document_widget_get_scale(widget);
+  unsigned int rotation = rotate ? zathura_document_widget_get_rotation(widget) : 0;
+
+  if (page_widget) {
+    scale *= zathura_page_widget_get_zoom(page_widget);
+    if (rotate) {
+      rotation = (rotation + zathura_page_widget_get_rotation(page_widget)) % 360;
+    }
+  }
 
   return page_calc_size(page, scale, rotation, page_height, page_width);
 }
