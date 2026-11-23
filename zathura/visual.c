@@ -2663,7 +2663,8 @@ unsigned int zathura_visual_annotate(zathura_t* zathura, zathura_annotation_type
   if (type == ZATHURA_ANNOTATION_OTHER) {
     return 0;
   }
-  if (visual->kind == ZATHURA_VISUAL_IMAGE || (visual->kind == ZATHURA_VISUAL_CARET && type != ZATHURA_ANNOTATION_TEXT)) {
+  if (visual->kind == ZATHURA_VISUAL_IMAGE ||
+      (visual->kind == ZATHURA_VISUAL_CARET && type != ZATHURA_ANNOTATION_TEXT)) {
     girara_notify(zathura->ui.session, GIRARA_WARNING, _("Select text to annotate first."));
     return 0;
   }
@@ -2716,7 +2717,8 @@ unsigned int zathura_visual_annotate_mouse(zathura_t* zathura, zathura_annotatio
       g_array_free(raw, TRUE);
     }
 
-    const bool ok = visual_add_annotation(zathura_document_get_page(document, page_index), rects, type, color, contents);
+    const bool ok =
+        visual_add_annotation(zathura_document_get_page(document, page_index), rects, type, color, contents);
     visual_annotation_result(zathura, ok == true ? 1 : 0, ok == false);
     zathura_page_widget_clear_selection(widget);
     return ok == true ? 1 : 0;
@@ -2764,7 +2766,7 @@ static unsigned int visual_annotation_apply(zathura_t* zathura, visual_annotatio
       continue;
     }
 
-    g_autoptr(GArray) selected = visual_selection_rects(layout, from, to, false);
+    g_autoptr(GArray) selected           = visual_selection_rects(layout, from, to, false);
     g_autoptr(girara_list_t) annotations = zathura_page_annotations_get(page, NULL);
     if (annotations == NULL || selected->len == 0) {
       continue;
@@ -2793,7 +2795,7 @@ static unsigned int visual_annotation_apply(zathura_t* zathura, visual_annotatio
       g_array_sort(hits, compare_uint_descending);
     }
     for (guint i = 0; i < hits->len; ++i) {
-      const unsigned int index = g_array_index(hits, unsigned int, i);
+      const unsigned int index    = g_array_index(hits, unsigned int, i);
       const zathura_error_t error = action == VISUAL_ANNOTATION_DELETE
                                         ? zathura_page_annotation_delete(page, index)
                                         : zathura_page_annotation_set_contents(page, index, contents);

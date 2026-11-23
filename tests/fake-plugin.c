@@ -12,10 +12,9 @@ typedef struct {
 static zathura_annotation_t* annotation_copy(const zathura_annotation_t* source) {
   zathura_annotation_t* copy = g_malloc0(sizeof(zathura_annotation_t));
   *copy                      = *source;
-  copy->quads                = source->n_quads != 0 ? g_memdup2(source->quads, source->n_quads * sizeof(*source->quads))
-                                                    : NULL;
-  copy->contents             = g_strdup(source->contents);
-  copy->author               = g_strdup(source->author);
+  copy->quads    = source->n_quads != 0 ? g_memdup2(source->quads, source->n_quads * sizeof(*source->quads)) : NULL;
+  copy->contents = g_strdup(source->contents);
+  copy->author   = g_strdup(source->author);
   return copy;
 }
 

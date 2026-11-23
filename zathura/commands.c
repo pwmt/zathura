@@ -386,8 +386,9 @@ bool cmd_annotate(girara_session_t* session, girara_list_t* argument_list) {
 
   const size_t argc = girara_list_size(argument_list);
   if (argc == 0) {
-    girara_notify(session, GIRARA_ERROR, _("Usage: annotate highlight|underline|squiggly|strikeout [color] | note <text> | "
-                                           "comment <text> | delete"));
+    girara_notify(session, GIRARA_ERROR,
+                  _("Usage: annotate highlight|underline|squiggly|strikeout [color] | note <text> | "
+                    "comment <text> | delete"));
     return false;
   }
 
@@ -472,7 +473,7 @@ bool cmd_annotate(girara_session_t* session, girara_list_t* argument_list) {
     have_color = true;
   }
 
-  const double* use_color = have_color == true ? color : NULL;
+  const double* use_color  = have_color == true ? color : NULL;
   const unsigned int added = use_mouse == true ? zathura_visual_annotate_mouse(zathura, type, use_color, contents)
                                                : zathura_visual_annotate(zathura, type, use_color, contents);
   if (added == 0) {

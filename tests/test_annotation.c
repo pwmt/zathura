@@ -76,8 +76,8 @@ static void test_modified_flag(void) {
 }
 
 static void test_invalid_arguments(void) {
-  zathura_error_t error = ZATHURA_ERROR_OK;
-  zathura_rectangle_t quad = {0, 0, 10, 10};
+  zathura_error_t error           = ZATHURA_ERROR_OK;
+  zathura_rectangle_t quad        = {0, 0, 10, 10};
   zathura_annotation_t annotation = highlight(&quad, NULL);
 
   g_assert_null(zathura_page_annotations_get(NULL, &error));
