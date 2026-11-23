@@ -27,6 +27,25 @@
 #include "synctex.h"
 #include "dbus-interface.h"
 
+gboolean cb_close_request(GtkWindow* UNUSED(window), zathura_t* zathura) {
+  static bool warned = false;
+
+  if (zathura == NULL || zathura_has_document(zathura) == false ||
+      zathura_document_is_modified(zathura_get_document(zathura)) == false) {
+    warned = false;
+    return FALSE;
+  }
+  if (warned == true) {
+    return FALSE;
+  }
+
+  warned = true;
+  girara_notify(zathura->ui.session, GIRARA_ERROR,
+                _("The document has unsaved annotations. Use :write to save them, or close the window again to "
+                  "discard them."));
+  return TRUE;
+}
+
 void cb_destroy(GtkWidget* widget, zathura_t* zathura) {
   /* hide the window on quit while the cleanup runs */
   if (widget == NULL && zathura != NULL && zathura->ui.session != NULL && zathura->ui.session->gtk.window != NULL) {

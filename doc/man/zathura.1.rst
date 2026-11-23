@@ -350,7 +350,11 @@ close
   Close document.
 
 quit
-  Quit zathura. Abbreviation: ``q``.
+  Quit zathura. Refuses to quit while annotations are unsaved. Abbreviation:
+  ``q``.
+
+quit!
+  Quit zathura and discard unsaved annotations. Abbreviation: ``q!``.
 
 exec
   Execute an external command. ``$FILE`` expands to the current document path,

@@ -321,6 +321,20 @@ bool cmd_quit(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
   return true;
 }
 
+bool cmd_quit_force(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  /* discard unsaved changes */
+  if (zathura_has_document(zathura) == true) {
+    zathura_document_set_modified(zathura_get_document(zathura), false);
+  }
+  sc_quit(session, NULL, NULL, 0);
+
+  return true;
+}
+
 bool cmd_print(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);

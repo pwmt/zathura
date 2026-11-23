@@ -287,7 +287,11 @@ zathura_error_t zathura_page_annotation_add(zathura_page_t* page, const zathura_
     return error;
   }
 
-  return functions->page_annotation_add(page, page->data, annotation);
+  error = functions->page_annotation_add(page, page->data, annotation);
+  if (error == ZATHURA_ERROR_OK) {
+    zathura_document_set_modified(page->document, true);
+  }
+  return error;
 }
 
 zathura_error_t zathura_page_annotation_delete(zathura_page_t* page, unsigned int index) {
@@ -306,7 +310,11 @@ zathura_error_t zathura_page_annotation_delete(zathura_page_t* page, unsigned in
     return error;
   }
 
-  return functions->page_annotation_delete(page, page->data, index);
+  error = functions->page_annotation_delete(page, page->data, index);
+  if (error == ZATHURA_ERROR_OK) {
+    zathura_document_set_modified(page->document, true);
+  }
+  return error;
 }
 
 zathura_error_t zathura_page_annotation_set_contents(zathura_page_t* page, unsigned int index, const char* contents) {
@@ -325,7 +333,11 @@ zathura_error_t zathura_page_annotation_set_contents(zathura_page_t* page, unsig
     return error;
   }
 
-  return functions->page_annotation_set_contents(page, page->data, index, contents);
+  error = functions->page_annotation_set_contents(page, page->data, index, contents);
+  if (error == ZATHURA_ERROR_OK) {
+    zathura_document_set_modified(page->document, true);
+  }
+  return error;
 }
 
 girara_list_t* zathura_page_form_fields_get(zathura_page_t* page, zathura_error_t* error) {

@@ -844,6 +844,7 @@ void config_load_default(zathura_t* zathura) {
   girara_inputbar_command_add(gsession, "help",       NULL,   cmd_help,                NULL,          _("Show help"));
   girara_inputbar_command_add(gsession, "open",       "o",    cmd_open,                cc_open,       _("Open document"));
   girara_inputbar_command_add(gsession, "quit",       "q",    cmd_quit,                NULL,          _("Close zathura"));
+  girara_inputbar_command_add(gsession, "quit!",      "q!",   cmd_quit_force,          NULL,          _("Close zathura and discard unsaved annotations"));
   girara_inputbar_command_add(gsession, "print",      NULL,   cmd_print,               NULL,          _("Print document"));
   girara_inputbar_command_add(gsession, "save",       NULL,   cmd_save,                cc_write,      _("Save document"));
   girara_inputbar_command_add(gsession, "save!",      NULL,   cmd_savef,               cc_write,      _("Save document (and force overwriting)"));

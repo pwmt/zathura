@@ -1526,6 +1526,12 @@ bool sc_quit(girara_session_t* session, girara_argument_t* UNUSED(argument), gir
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
+  if (zathura_has_document(zathura) == true && zathura_document_is_modified(zathura_get_document(zathura)) == true) {
+    girara_notify(session, GIRARA_ERROR, _("The document has unsaved annotations. Use :write to save them, or :quit! to "
+                                           "quit anyway."));
+    return false;
+  }
+
   girara_argument_t arg = {.n = GIRARA_HIDE, .data = NULL};
   girara_isc_completion(session, &arg, NULL, 0);
 

@@ -125,6 +125,22 @@ ZATHURA_PLUGIN_API void zathura_document_set_data(zathura_document_t* document, 
 ZATHURA_PLUGIN_API zathura_error_t zathura_document_save_as(zathura_document_t* document, const char* path);
 
 /**
+ * Whether the document was changed in memory, e.g. by annotating it, and not saved since
+ *
+ * @param document The document
+ * @return true if there are unsaved changes
+ */
+ZATHURA_PLUGIN_API bool zathura_document_is_modified(zathura_document_t* document);
+
+/**
+ * Mark the document as changed or saved
+ *
+ * @param document The document
+ * @param modified Whether there are unsaved changes
+ */
+ZATHURA_PLUGIN_API void zathura_document_set_modified(zathura_document_t* document, bool modified);
+
+/**
  * Generate the document index
  *
  * @param document The document object
