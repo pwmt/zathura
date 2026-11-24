@@ -53,11 +53,6 @@ void cb_destroy(GtkWidget* widget, zathura_t* zathura) {
   }
 }
 
-gboolean cb_close_request(GtkWindow* UNUSED(window), zathura_t* zathura) {
-  cb_destroy(NULL, zathura);
-  return TRUE;
-}
-
 void cb_buffer_changed(girara_session_t* session) {
   g_return_if_fail(session != NULL);
   g_return_if_fail(session->global.data != NULL);
