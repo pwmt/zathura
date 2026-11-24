@@ -37,7 +37,6 @@ end
 
 complete -c zathura -kxa '(__fish_complete_zathura)'
 
-complete -c zathura -s e -l reparent -d 'Reparents to window specified by xid'
 complete -c zathura -s c -l config-dir -d 'Path to config directory' \
          -x -a '(__fish_complete_directories (commandline -ct) "Config directory")'
 complete -c zathura -s d -l data-dir -d 'Path to data directory' \
@@ -54,5 +53,7 @@ complete -c zathura -l synctex-forward -d 'Move to given synctex position' -x
 complete -c zathura -l synctex-pid -d 'Highlight position in given process' -x -a '(__fish_complete_pids)'
 complete -c zathura -l mode -d 'Start in a non-default mode' -x -a 'presentation fullscreen'
 complete -c zathura -l fork -d 'Fork into the background'
+complete -c zathura -s b -l bookmark -d 'Bookmark to go to' -x
+complete -c zathura -s f -l find -d 'Search for the given string' -x
 complete -c zathura -s h -l help -d 'Show help options'
 complete -c zathura -s v -l version -d 'Print version information'

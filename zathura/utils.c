@@ -728,7 +728,8 @@ bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disab
       /* the next result is on a different page */
       g_object_set(G_OBJECT(page_widget), "search-current", -1, NULL);
 
-      for (unsigned int npage_id = 1; npage_id < num_pages; ++npage_id) {
+      /* the last step returns to the current page and wraps when no other page has results */
+      for (unsigned int npage_id = 1; npage_id <= num_pages; ++npage_id) {
         int ntmp              = cur_page + diff * (page_id + npage_id);
         zathura_page_t* npage = zathura_document_get_page(zathura->document, (ntmp + 2 * num_pages) % num_pages);
         ZathuraPageWidget* npage_page_widget = zathura_page_get_widget(zathura, npage);

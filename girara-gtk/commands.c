@@ -417,15 +417,6 @@ static bool girara_cmd_map_unmap(girara_session_t* session, girara_list_t* argum
     shortcut_buffer_command = g_strdup(tmp);
   }
 
-  if (unmap == true) {
-    if (mouse_event == false) {
-      girara_shortcut_remove(session, shortcut_mask, shortcut_key, shortcut_buffer_command, shortcut_mode);
-    } else {
-      girara_mouse_event_remove(session, shortcut_mask, shortcut_mouse_button, shortcut_mode);
-    }
-    return true;
-  }
-
   /* check for mouse mode */
   bool mouse_mode       = false;
   const char* event_str = NULL;
@@ -459,6 +450,15 @@ static bool girara_cmd_map_unmap(girara_session_t* session, girara_list_t* argum
         return false;
       }
     }
+  }
+
+  if (unmap == true) {
+    if (mouse_event == false) {
+      girara_shortcut_remove(session, shortcut_mask, shortcut_key, shortcut_buffer_command, shortcut_mode);
+    } else {
+      girara_mouse_event_remove(session, shortcut_mask, shortcut_mouse_button, shortcut_mode, event_type);
+    }
+    return true;
   }
 
   /* display mapping if no shortcut is supplied */

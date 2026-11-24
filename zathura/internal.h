@@ -12,6 +12,7 @@
 typedef struct zathura_password_dialog_info_s {
   char* path;         /**< Path to the file */
   char* uri;          /**< URI to the file */
+  int page_number;    /**< Page to open */
   zathura_t* zathura; /**< Zathura session */
 } zathura_password_dialog_info_t;
 

@@ -239,9 +239,11 @@ bool girara_mouse_event_add(girara_session_t* session, guint mask, guint button,
  * @param mask The mask
  * @param button Pressed button
  * @param mode Available mode
+ * @param event_type Event type
  * @return true No error occurred
  * @return false An error occurred
  */
-bool girara_mouse_event_remove(girara_session_t* session, guint mask, guint button, girara_mode_t mode);
+bool girara_mouse_event_remove(girara_session_t* session, guint mask, guint button, girara_mode_t mode,
+                               girara_event_type_t event_type);
 
 #endif
