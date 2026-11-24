@@ -232,6 +232,12 @@ void zathura_update_view_ppi(zathura_t* zathura) {
   }
 }
 
+/* quit like :quit while the widgets still exist when the window manager closes the window */
+static gboolean cb_close_request(GtkWindow* UNUSED(window), zathura_t* zathura) {
+  cb_destroy(NULL, zathura);
+  return TRUE;
+}
+
 static bool init_ui(zathura_t* zathura) {
   if (girara_session_init(zathura->ui.session, "zathura") == false) {
     girara_error("Failed to initialize girara.");
