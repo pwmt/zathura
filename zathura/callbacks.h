@@ -19,6 +19,9 @@
  */
 void cb_destroy(GtkWidget* widget, zathura_t* zathura);
 
+/** Quits like :quit while the widgets still exist when the window manager closes the window. */
+gboolean cb_close_request(GtkWindow* window, zathura_t* zathura);
+
 /**
  * This function gets called when the buffer of girara changes
  *
