@@ -495,6 +495,10 @@ static bool sqlite_save_jumplist(zathura_database_t* db, const char* file, girar
       "INSERT INTO jumplist (file, page, hadj_ratio, vadj_ratio) VALUES (?, ?, ?, ?);";
   static const char SQL_REMOVE_JUMPLIST[] = "DELETE FROM jumplist WHERE file = ?;";
 
+  if (girara_list_size(jumplist) == 0) {
+    return true;
+  }
+
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
@@ -518,10 +522,6 @@ static bool sqlite_save_jumplist(zathura_database_t* db, const char* file, girar
   if (sqlite3_step(stmt) != SQLITE_DONE) {
     sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
     return false;
-  }
-
-  if (girara_list_size(jumplist) == 0) {
-    return sqlite_commit(priv->session);
   }
 
   bool status = true;
