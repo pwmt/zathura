@@ -1080,11 +1080,13 @@ static void cb_cache_invalidated(ZathuraRenderRequest* UNUSED(request), void* da
   g_return_if_fail(ZATHURA_IS_PAGE_WIDGET(widget));
 
   ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
-  priv->cached                   = false;
-  /* aborting also drops the surface since the page is no longer cached */
-  if (page_widget_is_visible(widget) == false) {
-    zathura_page_widget_abort_render_request(widget);
+  if (zathura_page_widget_have_surface(widget) == true && priv->cached == true &&
+      page_widget_is_visible(widget) == false) {
+    /* The page was in the cache but got removed and is invisible, so get rid of
+     * the surface. */
+    zathura_page_widget_update_surface(widget, NULL, false);
   }
+  priv->cached = false;
 }
 
 static void evaluate_link_at_mouse_position(ZathuraPageWidget* page, int oldx, int oldy) {
