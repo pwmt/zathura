@@ -240,6 +240,17 @@ typedef struct {
 static gboolean synctex_highlight_rects_impl(gpointer ptr) {
   highlights_rect_data_t* data = ptr;
 
+  /* the rectangle array was sized for the page count at call time */
+  zathura_document_t* document = zathura_get_document(data->zathura);
+  if (document == NULL || zathura_document_get_number_of_pages(document) != data->number_of_pages) {
+    for (unsigned int i = 0; i != data->number_of_pages; ++i) {
+      girara_list_free(data->rectangles[i]);
+    }
+    g_free(data->rectangles);
+    g_free(data);
+    return false;
+  }
+
   /* synctex_highlight_rects transfers ownership of each rectangles[i] to the
    * page widget via g_object_set "search-results"; only free the array. */
   synctex_highlight_rects(data->zathura, data->page, data->rectangles);
@@ -471,7 +482,7 @@ static void handle_method_call(GDBusConnection* UNUSED(connection), const gchar*
 }
 
 static void json_document_info_add_node(JsonBuilder* builder, girara_tree_node_t* index) {
-  girara_list_t* list = girara_node_get_children(index);
+  g_autoptr(girara_list_t) list = girara_node_get_children(index);
   for (size_t idx = 0; idx != girara_list_size(list); ++idx) {
     girara_tree_node_t* node               = girara_list_nth(list, idx);
     zathura_index_element_t* index_element = girara_node_get_data(node);

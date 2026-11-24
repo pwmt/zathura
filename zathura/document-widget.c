@@ -1326,16 +1326,19 @@ void zathura_document_widget_update_visible_pages(ZathuraDocumentWidget* documen
     if (visible) {
       activate_page(document, page_id);
 
+      /* the page cache frees the surfaces of prefetched neighbours on eviction */
       for (unsigned int i = priv->pages_per_row; i; --i) {
         if (page_id >= i) {
           ZathuraPageWidget* previous = zathura_document_widget_get_page(document, page_id - i);
           if (previous) {
+            zathura_renderer_page_cache_add(priv->renderer, page_id - i);
             zathura_page_widget_update_view_time(previous);
           }
         }
         if (page_id + i < number_of_pages) {
           ZathuraPageWidget* next = zathura_document_widget_get_page(document, page_id + i);
           if (next) {
+            zathura_renderer_page_cache_add(priv->renderer, page_id + i);
             zathura_page_widget_update_view_time(next);
           }
         }

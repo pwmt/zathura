@@ -59,10 +59,10 @@ bool file_valid_extension(zathura_t* zathura, const char* path) {
 
 /* build children store from a girara tree node */
 static GListStore* index_element_build_children(girara_session_t* session, girara_tree_node_t* tree) {
-  GListStore* store            = g_list_store_new(ZATHURA_TYPE_INDEX_ELEMENT_OBJECT);
-  girara_list_t* list          = girara_node_get_children(tree);
-  zathura_t* zathura           = session->global.data;
-  zathura_document_t* document = zathura != NULL ? zathura_get_document(zathura) : NULL;
+  GListStore* store             = g_list_store_new(ZATHURA_TYPE_INDEX_ELEMENT_OBJECT);
+  g_autoptr(girara_list_t) list = girara_node_get_children(tree);
+  zathura_t* zathura            = session->global.data;
+  zathura_document_t* document  = zathura != NULL ? zathura_get_document(zathura) : NULL;
 
   for (size_t idx = 0; idx != girara_list_size(list); ++idx) {
     girara_tree_node_t* node               = girara_list_nth(list, idx);
@@ -639,7 +639,9 @@ static void cut_rectangle(const zathura_rectangle_t* rect, girara_list_t* points
 
       *r = (zathura_rectangle_t){x, y, cx, cy};
       y  = cy;
-      girara_list_append_unique(rectangles, cmp_rectangle, r);
+      if (girara_list_append_unique(rectangles, cmp_rectangle, r) == false) {
+        g_free(r);
+      }
     }
     x = cx;
   }
