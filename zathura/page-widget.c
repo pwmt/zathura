@@ -351,6 +351,8 @@ static void zathura_page_widget_finalize(GObject* object) {
   girara_list_free(priv->visual.list);
   girara_list_free(priv->visual.labels);
   girara_list_free(priv->visual.flash);
+  girara_list_free(priv->images.list);
+  girara_list_free(priv->selection.list);
 
   G_OBJECT_CLASS(zathura_page_widget_parent_class)->finalize(object);
 }
@@ -988,10 +990,8 @@ void zathura_page_widget_update_surface(ZathuraPageWidget* widget, cairo_surface
     cairo_surface_destroy(priv->thumbnail);
     priv->thumbnail = NULL;
   }
-  /* force a redraw here */
-  if (priv->surface != NULL) {
-    zathura_page_widget_redraw_canvas(widget);
-  }
+  /* GTK keeps the last drawing until the next redraw, also when the surface was dropped */
+  zathura_page_widget_redraw_canvas(widget);
 }
 
 bool zathura_page_widget_render(ZathuraPageWidget* widget) {
@@ -1080,13 +1080,11 @@ static void cb_cache_invalidated(ZathuraRenderRequest* UNUSED(request), void* da
   g_return_if_fail(ZATHURA_IS_PAGE_WIDGET(widget));
 
   ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
-  if (zathura_page_widget_have_surface(widget) == true && priv->cached == true &&
-      page_widget_is_visible(widget) == false) {
-    /* The page was in the cache but got removed and is invisible, so get rid of
-     * the surface. */
-    zathura_page_widget_update_surface(widget, NULL, false);
+  priv->cached                   = false;
+  /* aborting also drops the surface since the page is no longer cached */
+  if (page_widget_is_visible(widget) == false) {
+    zathura_page_widget_abort_render_request(widget);
   }
-  priv->cached = false;
 }
 
 static void evaluate_link_at_mouse_position(ZathuraPageWidget* page, int oldx, int oldy) {

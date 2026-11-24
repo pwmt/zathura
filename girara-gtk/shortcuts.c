@@ -401,7 +401,7 @@ static void feed_key_to_inputbar(girara_session_t* session, guint keyval, guint 
 
 bool girara_sc_feedkeys(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
                         unsigned int t) {
-  if (session == NULL || argument == NULL) {
+  if (session == NULL || argument == NULL || argument->data == NULL) {
     return false;
   }
 
@@ -410,7 +410,8 @@ bool girara_sc_feedkeys(girara_session_t* session, girara_argument_t* argument, 
     return false;
   }
 
-  const char* input         = argument->data;
+  /* the fed keys can rebind or unmap this shortcut and free argument->data */
+  g_autofree char* input    = g_strdup(argument->data);
   unsigned int input_length = strlen(input);
 
   t = MAX(1, t);
