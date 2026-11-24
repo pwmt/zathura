@@ -77,7 +77,7 @@ void css_template_fill_font(GiraraTemplate* csstemplate, const char* font) {
     girara_template_set_variable_value(csstemplate, "font-size", "9pt");
   } else {
     g_autofree char* size = g_strdup_printf("%d%s", pango_font_description_get_size(descr) / PANGO_SCALE,
-                                            pango_font_description_get_size_is_absolute(descr) ? "" : "pt");
+                                            pango_font_description_get_size_is_absolute(descr) ? "px" : "pt");
     girara_template_set_variable_value(csstemplate, "font-size", size);
   }
 

@@ -885,11 +885,11 @@ bool sc_bisect(girara_session_t* session, girara_argument_t* argument, girara_ev
     } else if (t > cur_page) {
       zathura->bisect.start = cur_page;
       zathura->bisect.end   = t;
-      direction             = BACKWARD;
+      direction             = FORWARD;
     } else {
       zathura->bisect.start = t;
       zathura->bisect.end   = cur_page;
-      direction             = FORWARD;
+      direction             = BACKWARD;
     }
   } else {
     direction = argument->n;

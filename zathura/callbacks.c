@@ -405,8 +405,9 @@ gboolean cb_password_dialog(GiraraDialog* inputbar, const char* input, void* dat
   }
 
   /* try to open document again */
-  const bool opened = document_open(dialog->zathura, dialog->path, dialog->uri, input, ZATHURA_PAGE_NUMBER_UNSPECIFIED,
-                                    reloading ? &file_info : NULL);
+  const int page_number = reloading ? ZATHURA_PAGE_NUMBER_UNSPECIFIED : dialog->page_number;
+  const bool opened =
+      document_open(dialog->zathura, dialog->path, dialog->uri, input, page_number, reloading ? &file_info : NULL);
   g_free(file_info.first_page_column_list);
   if (!opened) {
     g_idle_add(password_dialog, g_steal_pointer(&dialog));

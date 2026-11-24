@@ -28,6 +28,11 @@ static gboolean cb_marks_one_shot(GtkEventControllerKey* controller, guint keyva
   bool evaluate            = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(ctrl), "evaluate")) != 0;
   GtkWidget* win           = gtk_event_controller_get_widget(ctrl);
 
+  /* an uppercase mark starts with a Shift press, the letter follows */
+  if (keyval == GDK_KEY_Shift_L || keyval == GDK_KEY_Shift_R) {
+    return FALSE;
+  }
+
   /* remove the controller from its own callback so it only fires once */
   gtk_widget_remove_controller(win, ctrl);
 

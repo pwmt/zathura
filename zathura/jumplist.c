@@ -82,9 +82,14 @@ void zathura_jumplist_trim(zathura_t* zathura) {
   girara_list_iterator_t* cur = girara_list_iterator(zathura->jumplist.list);
 
   while (zathura->jumplist.size > zathura->jumplist.max_size) {
-    if (girara_list_iterator_data(cur) == girara_list_iterator_data(zathura->jumplist.cur)) {
-      girara_list_iterator_free(zathura->jumplist.cur);
-      zathura->jumplist.cur = NULL;
+    if (zathura->jumplist.cur != NULL) {
+      if (girara_list_iterator_data(cur) == girara_list_iterator_data(zathura->jumplist.cur)) {
+        girara_list_iterator_free(zathura->jumplist.cur);
+        zathura->jumplist.cur = NULL;
+      } else {
+        /* the current jump moves down by one when the first entry is removed */
+        girara_list_iterator_previous(zathura->jumplist.cur);
+      }
     }
 
     girara_list_iterator_remove(cur);

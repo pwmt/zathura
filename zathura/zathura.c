@@ -398,6 +398,10 @@ static bool init_database(zathura_t* zathura) {
     girara_debug("Using sqlite database backend.");
     g_autofree char* tmp = g_build_filename(zathura->config.data_dir, "bookmarks.sqlite", NULL);
     zathura->database    = zathura_sqldatabase_new(tmp);
+    if (zathura->database == NULL) {
+      girara_error("Failed to open '%s'. Bookmarks, history and file positions will not be saved.", tmp);
+      zathura->database = zathura_nulldatabase_new();
+    }
   } else if (is_null_database == true) {
     zathura->database = zathura_nulldatabase_new();
   } else {
@@ -1208,9 +1212,10 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
         return false;
       }
 
-      password_dialog_info->zathura = zathura;
-      password_dialog_info->path    = g_strdup(path);
-      password_dialog_info->uri     = g_strdup(uri);
+      password_dialog_info->zathura     = zathura;
+      password_dialog_info->path        = g_strdup(path);
+      password_dialog_info->uri         = g_strdup(uri);
+      password_dialog_info->page_number = page_number;
       if (password_dialog_info->path != NULL) {
         g_idle_add(document_open_password_dialog, g_steal_pointer(&password_dialog_info));
         return false;
@@ -1645,6 +1650,11 @@ static void document_index_clear(zathura_t* zathura) {
     zathura->ui.index = NULL;
   }
   zathura->global.current_index_position = 0;
+
+  /* leave index mode together with the index view */
+  if (girara_mode_get(zathura->ui.session) == zathura->modes.index) {
+    girara_mode_set(zathura->ui.session, zathura->modes.normal);
+  }
 }
 
 bool document_close(zathura_t* zathura, bool keep_monitor) {

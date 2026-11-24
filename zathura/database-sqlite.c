@@ -478,6 +478,16 @@ static bool sqlite_load_bookmarks(zathura_database_t* db, const char* file, gira
   return true;
 }
 
+/* a failed COMMIT leaves the transaction open, so roll it back */
+static bool sqlite_commit(sqlite3* session) {
+  if (sqlite3_exec(session, "COMMIT;", NULL, 0, NULL) == SQLITE_OK) {
+    return true;
+  }
+
+  sqlite3_exec(session, "ROLLBACK;", NULL, 0, NULL);
+  return false;
+}
+
 static bool sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jumplist) {
   g_return_val_if_fail(db != NULL && file != NULL && jumplist != NULL, false);
 
@@ -511,8 +521,7 @@ static bool sqlite_save_jumplist(zathura_database_t* db, const char* file, girar
   }
 
   if (girara_list_size(jumplist) == 0) {
-    sqlite3_exec(priv->session, "COMMIT;", NULL, 0, NULL);
-    return true;
+    return sqlite_commit(priv->session);
   }
 
   bool status = true;
@@ -542,8 +551,7 @@ static bool sqlite_save_jumplist(zathura_database_t* db, const char* file, girar
     sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
     return false;
   } else {
-    sqlite3_exec(priv->session, "COMMIT;", NULL, 0, NULL);
-    return true;
+    return sqlite_commit(priv->session);
   }
 }
 
@@ -626,8 +634,7 @@ static bool sqlite_save_quickmarks(zathura_database_t* db, const char* file, gir
   }
 
   if (girara_list_size(quickmarks) == 0) {
-    sqlite3_exec(priv->session, "COMMIT;", NULL, 0, NULL);
-    return true;
+    return sqlite_commit(priv->session);
   }
 
   bool status = true;
@@ -657,10 +664,9 @@ static bool sqlite_save_quickmarks(zathura_database_t* db, const char* file, gir
 
   if (status == false) {
     sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
-  } else {
-    sqlite3_exec(priv->session, "COMMIT;", NULL, 0, NULL);
+    return false;
   }
-  return status;
+  return sqlite_commit(priv->session);
 }
 
 static girara_list_t* sqlite_load_quickmarks(zathura_database_t* db, const char* file) {

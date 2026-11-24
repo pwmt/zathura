@@ -56,7 +56,7 @@ static void test_config_mouse_release_override(void) {
                                          GIRARA_EVENT_BUTTON_RELEASE, second_argument, NULL));
     g_assert_cmpuint(girara_list_size(session->bindings.mouse_events), ==, 1);
     g_assert_cmpint(binding->argument.n, ==, second_argument);
-    g_assert_true(girara_mouse_event_remove(session, own, button, session->modes.normal));
+    g_assert_true(girara_mouse_event_remove(session, own, button, session->modes.normal, GIRARA_EVENT_BUTTON_RELEASE));
     g_assert_cmpuint(girara_list_size(session->bindings.mouse_events), ==, 0);
   }
 

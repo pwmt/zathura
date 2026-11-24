@@ -205,6 +205,11 @@ static void cb_app_shutdown(GApplication* UNUSED(app), gpointer data) {
   }
 }
 
+/* the child reads the document from stdin only if it inherits it, g_spawn uses /dev/null otherwise */
+static GSpawnFlags spawn_stdin_flag(const char* file) {
+  return g_strcmp0(file, "-") == 0 ? G_SPAWN_CHILD_INHERITS_STDIN : G_SPAWN_DEFAULT;
+}
+
 static GStrv build_argv_for_child(int idx, char** argv, int argc, char** orig_argv, int orig_argc, int file_idx_base) {
   GPtrArray* arr = g_ptr_array_new();
   g_ptr_array_add(arr, g_strdup(orig_argv[0]));
@@ -363,7 +368,8 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
       g_auto(GStrv) spawn_argv = build_argv_for_child(idx, argv, argc, orig_argv, orig_argc, file_idx_base);
       GPid pid;
       if (!g_spawn_async(NULL, spawn_argv, NULL,
-                         G_SPAWN_SEARCH_PATH | (forkback ? G_SPAWN_DEFAULT : G_SPAWN_DO_NOT_REAP_CHILD),
+                         G_SPAWN_SEARCH_PATH | (forkback ? G_SPAWN_DEFAULT : G_SPAWN_DO_NOT_REAP_CHILD) |
+                             spawn_stdin_flag(argv[idx]),
                          forkback ? start_process_group : NULL, NULL, &pid, &error)) {
         girara_error("Could not spawn: %s", error->message);
         return -1;
@@ -384,8 +390,9 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   /* Fork into the background if the user really wants to ... */
   if (!print_version && forkback && file_idx < file_idx_base + 1) {
     g_auto(GStrv) spawn_argv = build_argv_for_child(file_idx, argv, argc, orig_argv, orig_argc, file_idx_base);
-    if (!g_spawn_async(NULL, spawn_argv, NULL, G_SPAWN_DEFAULT | G_SPAWN_SEARCH_PATH, start_process_group, NULL, NULL,
-                       &error)) {
+    if (!g_spawn_async(NULL, spawn_argv, NULL,
+                       G_SPAWN_SEARCH_PATH | spawn_stdin_flag(file_idx != 0 ? argv[file_idx] : NULL),
+                       start_process_group, NULL, NULL, &error)) {
       girara_error("Could not spawn: %s", error->message);
       return -1;
     }

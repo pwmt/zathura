@@ -174,7 +174,7 @@ bool girara_isc_string_manipulation(girara_session_t* session, girara_argument_t
   int i;
 
   switch (argument->n) {
-  case GIRARA_DELETE_LAST_WORD:
+  case GIRARA_DELETE_LAST_WORD: {
     if (pos == 1 && (input[0] == ':' || input[0] == '/')) {
       break;
     }
@@ -182,20 +182,23 @@ bool girara_isc_string_manipulation(girara_session_t* session, girara_argument_t
       break;
     }
 
-    i = pos - 1;
+    /* scan characters because pos counts characters and not UTF-8 bytes */
+    g_autofree gunichar* text = g_utf8_to_ucs4_fast(input, -1, NULL);
+    i                         = pos - 1;
 
     /* remove trailing spaces */
-    for (; i >= 0 && input[i] == ' '; i--) {
+    for (; i >= 0 && text[i] == ' '; i--) {
     }
 
     /* find the beginning of the word */
-    while ((i == (pos - 1)) || ((i > 0) && separator != NULL && !strchr(separator, input[i]))) {
+    while ((i == (pos - 1)) || ((i > 0) && separator != NULL && !g_utf8_strchr(separator, -1, text[i]))) {
       i--;
     }
 
     gtk_editable_delete_text(GTK_EDITABLE(girara_get_active_entry(session)), i + 1, pos);
     gtk_editable_set_position(GTK_EDITABLE(girara_get_active_entry(session)), i + 1);
     break;
+  }
   case GIRARA_DELETE_LAST_CHAR:
     if (length != 1 && pos == 1 && (input[0] == ':' || input[0] == '/')) {
       break;
@@ -601,14 +604,16 @@ void girara_mouse_event_free(girara_mouse_event_t* mouse_event) {
   }
 }
 
-bool girara_mouse_event_remove(girara_session_t* session, guint mask, guint button, girara_mode_t mode) {
+bool girara_mouse_event_remove(girara_session_t* session, guint mask, guint button, girara_mode_t mode,
+                               girara_event_type_t event_type) {
   g_return_val_if_fail(session != NULL, false);
+
+  mask = girara_mouse_event_normalize_mask(event_type, button, mask);
 
   /* search for existing binding */
   for (size_t idx = 0; idx != girara_list_size(session->bindings.mouse_events); ++idx) {
     girara_mouse_event_t* me_it = girara_list_nth(session->bindings.mouse_events, idx);
-    if (me_it->mask == girara_mouse_event_normalize_mask(me_it->event_type, button, mask) && me_it->button == button &&
-        me_it->mode == mode) {
+    if (me_it->mask == mask && me_it->button == button && me_it->mode == mode && me_it->event_type == event_type) {
       girara_list_remove(session->bindings.mouse_events, me_it);
       return true;
     }

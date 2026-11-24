@@ -355,7 +355,8 @@ bool synctex_view(zathura_t* zathura, const char* input_file, unsigned int line,
   g_autoptr(girara_list_t) rectangles      = synctex_rectangles_from_position(
       zathura, zathura_document_get_path(document), input_file, line, column, &page, &secondary_rects);
 
-  if (!rectangles) {
+  /* keep the view and the search results when no record matches */
+  if (!rectangles || girara_list_size(rectangles) == 0) {
     return false;
   }
 
