@@ -240,20 +240,27 @@ typedef struct {
 static gboolean synctex_highlight_rects_impl(gpointer ptr) {
   highlights_rect_data_t* data = ptr;
 
-  /* the rectangle array was sized for the page count at call time */
-  zathura_document_t* document = zathura_get_document(data->zathura);
-  if (document == NULL || zathura_document_get_number_of_pages(document) != data->number_of_pages) {
+  zathura_document_t* document       = zathura_get_document(data->zathura);
+  const unsigned int number_of_pages = document != NULL ? zathura_document_get_number_of_pages(document) : 0;
+
+  /* a reload can change the page count since the call */
+  if (data->page >= number_of_pages) {
     for (unsigned int i = 0; i != data->number_of_pages; ++i) {
       girara_list_free(data->rectangles[i]);
     }
-    g_free(data->rectangles);
-    g_free(data);
-    return false;
-  }
+  } else {
+    for (unsigned int i = number_of_pages; i < data->number_of_pages; ++i) {
+      girara_list_free(data->rectangles[i]);
+    }
+    data->rectangles = g_renew(girara_list_t*, data->rectangles, number_of_pages);
+    for (unsigned int i = data->number_of_pages; i < number_of_pages; ++i) {
+      data->rectangles[i] = NULL;
+    }
 
-  /* synctex_highlight_rects transfers ownership of each rectangles[i] to the
-   * page widget via g_object_set "search-results"; only free the array. */
-  synctex_highlight_rects(data->zathura, data->page, data->rectangles);
+    /* synctex_highlight_rects transfers ownership of each rectangles[i] to the
+     * page widget via g_object_set "search-results"; only free the array. */
+    synctex_highlight_rects(data->zathura, data->page, data->rectangles);
+  }
 
   g_free(data->rectangles);
   g_free(data);

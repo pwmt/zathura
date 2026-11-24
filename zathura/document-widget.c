@@ -1293,6 +1293,17 @@ static void deactivate_page(ZathuraDocumentWidget* document, unsigned int page_i
   }
 }
 
+static bool page_next_to_visible(ZathuraDocumentWidget* document, unsigned int page_id) {
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  for (unsigned int i = 1; i <= priv->pages_per_row; ++i) {
+    if ((page_id >= i && zathura_document_widget_page_is_visible(document, page_id - i) == true) ||
+        zathura_document_widget_page_is_visible(document, page_id + i) == true) {
+      return true;
+    }
+  }
+  return false;
+}
+
 void zathura_document_widget_update_visible_pages(ZathuraDocumentWidget* document) {
   g_return_if_fail(document != NULL);
 
@@ -1326,19 +1337,16 @@ void zathura_document_widget_update_visible_pages(ZathuraDocumentWidget* documen
     if (visible) {
       activate_page(document, page_id);
 
-      /* the page cache frees the surfaces of prefetched neighbours on eviction */
       for (unsigned int i = priv->pages_per_row; i; --i) {
         if (page_id >= i) {
           ZathuraPageWidget* previous = zathura_document_widget_get_page(document, page_id - i);
           if (previous) {
-            zathura_renderer_page_cache_add(priv->renderer, page_id - i);
             zathura_page_widget_update_view_time(previous);
           }
         }
         if (page_id + i < number_of_pages) {
           ZathuraPageWidget* next = zathura_document_widget_get_page(document, page_id + i);
           if (next) {
-            zathura_renderer_page_cache_add(priv->renderer, page_id + i);
             zathura_page_widget_update_view_time(next);
           }
         }
@@ -1346,6 +1354,11 @@ void zathura_document_widget_update_visible_pages(ZathuraDocumentWidget* documen
       zathura_page_widget_update_view_time(zathura_page_widget);
     } else {
       deactivate_page(document, page_id);
+
+      /* only the neighbours of visible pages keep their prerendered surface */
+      if (page_next_to_visible(document, page_id) == false) {
+        zathura_page_widget_abort_render_request(zathura_page_widget);
+      }
 
       girara_list_t* results = NULL;
       g_object_get(G_OBJECT(zathura_page_widget), "search-results", &results, NULL);
