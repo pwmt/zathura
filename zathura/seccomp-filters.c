@@ -1,5 +1,6 @@
 /* SPDX-License-Identifier: Zlib */
 
+#define _GNU_SOURCE
 #include "seccomp-filters.h"
 
 #include <girara/log.h>
@@ -78,7 +79,7 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(faccessat);
   ALLOW_RULE(faccessat2);
   ALLOW_RULE(fallocate);
-  ALLOW_RULE(fcntl); /* TODO: build detailed filter */
+  /* ALLOW_RULE(fcntl); specified below */
 #ifdef __NR_fstat
   ALLOW_RULE(fstat); /* used by older libc, stat (below), lstat(below), fstatat, newfstatat(below) */
 #endif
@@ -242,16 +243,13 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(timerfd_gettime);
   ALLOW_RULE(epoll_pwait);
 
-  /* fcntl filter - not yet working */
-  /*ADD_RULE("allow", SCMP_ACT_ALLOW, fcntl, 1, SCMP_CMP(0, SCMP_CMP_EQ, \
-              F_GETFL | \
-              F_SETFL | \
-              F_ADD_SEALS | \
-              F_SEAL_SEAL | \
-              F_SEAL_SHRINK | \
-              F_DUPFD_CLOEXEC | \
-              F_SETFD | \
-              FD_CLOEXEC )); */
+  /* block F_SETOWN, F_SETSIG and F_SETOWN_EX, SIGIO could signal other processes */
+  ADD_RULE("allow", SCMP_ACT_ALLOW, fcntl, 1, SCMP_CMP(1, SCMP_CMP_LT, F_SETOWN));
+  ADD_RULE("allow", SCMP_ACT_ALLOW, fcntl, 1, SCMP_CMP(1, SCMP_CMP_EQ, F_GETOWN));
+  ADD_RULE("allow", SCMP_ACT_ALLOW, fcntl, 1, SCMP_CMP(1, SCMP_CMP_GT, F_SETSIG));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), fcntl, 1, SCMP_CMP(1, SCMP_CMP_EQ, F_SETOWN));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), fcntl, 1, SCMP_CMP(1, SCMP_CMP_EQ, F_SETSIG));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), fcntl, 1, SCMP_CMP(1, SCMP_CMP_EQ, F_SETOWN_EX));
 
   /* Special requirements for ioctl, allowed on stdout/stderr */
   /* deny TIOCSTI to prevent keystroke injection into the controlling TTY */
