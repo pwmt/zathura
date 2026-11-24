@@ -88,6 +88,7 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
 #ifdef __NR_futex_time64
   ALLOW_RULE(futex_time64);
 #endif
+  ALLOW_RULE(getcwd); /* used by the ps plugin */
   /* ALLOW_RULE(getdents); 32 bit only */
   ALLOW_RULE(getdents64);
   ALLOW_RULE(getegid);
@@ -146,6 +147,7 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(rt_sigaction);
   ALLOW_RULE(rt_sigprocmask);
   ALLOW_RULE(rt_sigreturn);
+  ALLOW_RULE(sched_yield); /* used by the cb plugin */
   /* ALLOW_RULE(sched_setattr); */
   /* ALLOW_RULE(sched_getattr); */
   ALLOW_RULE(sendmsg); /* ipc, used by wayland socket */
@@ -294,6 +296,7 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   */
 
   ERRNO_RULE(openat2);
+  ERRNO_RULE(fadvise64); /* optional for fontconfig but works without it */
   ERRNO_RULE(pwritev2);
 #if defined(__NR_fchmodat2) && defined(__SNR_fchmodat2)
   ERRNO_RULE(fchmodat2);
