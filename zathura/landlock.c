@@ -45,6 +45,10 @@ static inline int landlock_restrict_self(const int ruleset_fd, const __u32 flags
 #define LANDLOCK_ACCESS_FS_IOCTL_DEV (1ULL << 15)
 #endif
 
+#ifndef LANDLOCK_ACCESS_FS_RESOLVE_UNIX
+#define LANDLOCK_ACCESS_FS_RESOLVE_UNIX (1ULL << 16)
+#endif
+
 #ifndef LANDLOCK_SCOPE_SIGNAL
 #define LANDLOCK_SCOPE_SIGNAL (1ULL << 1)
 #endif
@@ -122,8 +126,12 @@ int landlock_drop_write(void) {
     return 1; /* unsupported, graceful fallback */
   }
 
-  const __u64 fs = _LANDLOCK_ACCESS_FS_WRITE | LANDLOCK_ACCESS_FS_EXECUTE | LANDLOCK_ACCESS_FS_REFER |
-                   LANDLOCK_ACCESS_FS_TRUNCATE | LANDLOCK_ACCESS_FS_IOCTL_DEV;
+  __u64 fs = _LANDLOCK_ACCESS_FS_WRITE | LANDLOCK_ACCESS_FS_EXECUTE | LANDLOCK_ACCESS_FS_REFER |
+             LANDLOCK_ACCESS_FS_TRUNCATE | LANDLOCK_ACCESS_FS_IOCTL_DEV;
+  /* block connecting to unix sockets by path, e.g. the session bus, available since ABI 9 (Linux 7.1) */
+  if (abi >= 9) {
+    fs |= LANDLOCK_ACCESS_FS_RESOLVE_UNIX;
+  }
   const __u64 net = LANDLOCK_ACCESS_NET_BIND_TCP | LANDLOCK_ACCESS_NET_CONNECT_TCP;
   __u64 scoped    = LANDLOCK_SCOPE_SIGNAL;
   if (session_is_wayland()) {
