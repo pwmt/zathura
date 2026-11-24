@@ -344,8 +344,15 @@ static void link_remote(zathura_t* zathura, const char* file) {
   g_autofree char* dir = g_path_get_dirname(path);
   g_autofree char* uri = g_build_filename(file, NULL);
 
+  /* the child runs in the document directory so a relative argv[0] must be resolved first */
+  g_autofree char* program = g_find_program_in_path(*zathura->global.arguments);
+  if (program == NULL) {
+    girara_error("Failed to find '%s'", *zathura->global.arguments);
+    return;
+  }
+
   /* the document controls uri, it must not be parsed as an option */
-  char* argv[] = {*zathura->global.arguments, "--", uri, NULL};
+  char* argv[] = {program, "--", uri, NULL};
 
   g_autoptr(GError) error = NULL;
   if (!g_spawn_async(dir, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, &error)) {

@@ -63,7 +63,14 @@ bool synctex_get_input_line_column(zathura_t* zathura, const char* filename, uns
     synctex_node_p node = synctex_scanner_next_result(scanner);
     if (node) {
       if (input_file) {
-        *input_file = g_strdup(synctex_scanner_get_name(scanner, synctex_node_tag(node)));
+        /* an absolute path names the same file the editor would open and cannot be read as an option */
+        const char* name = synctex_scanner_get_name(scanner, synctex_node_tag(node));
+        if (name == NULL || g_path_is_absolute(name) == true) {
+          *input_file = g_strdup(name);
+        } else {
+          g_autofree char* cwd = g_get_current_dir();
+          *input_file          = g_build_filename(cwd, name, NULL);
+        }
       }
       if (line) {
         *line = synctex_node_line(node);
