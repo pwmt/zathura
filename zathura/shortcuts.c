@@ -632,13 +632,13 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
     return false;
   }
 
+  int layout_mode = DOCUMENT_WIDGET_GRID;
+  g_object_get(zathura->ui.document_widget, "layout-mode", &layout_mode, NULL);
+  const bool single = layout_mode == DOCUMENT_WIDGET_SINGLE;
+
   /* in single page mode the adjustment spans one page so route a full page scroll through the page */
-  if (argument->n == FULL_DOWN || argument->n == FULL_UP) {
-    int layout_mode = DOCUMENT_WIDGET_GRID;
-    g_object_get(zathura->ui.document_widget, "layout-mode", &layout_mode, NULL);
-    if (layout_mode == DOCUMENT_WIDGET_SINGLE) {
-      return scroll_single_page_full(zathura, argument->n == FULL_DOWN);
-    }
+  if (single && (argument->n == FULL_DOWN || argument->n == FULL_UP)) {
+    return scroll_single_page_full(zathura, argument->n == FULL_DOWN);
   }
 
   /* if TOP or BOTTOM, go there and we are done */
@@ -691,10 +691,15 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
   unsigned int view_height = 0;
   zathura_document_widget_get_viewport_size(zathura->ui.document_widget, &view_height, &view_width);
 
-  unsigned int doc_width  = 0;
-  unsigned int doc_height = 0;
-  zathura_document_widget_get_document_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), &doc_height,
-                                            &doc_width);
+  /* The adjustments span the current page in single-page mode and the grid otherwise. */
+  GtkScrollable* scrollable = GTK_SCROLLABLE(zathura->ui.document_widget);
+  GtkAdjustment* hadj       = gtk_scrollable_get_hadjustment(scrollable);
+  GtkAdjustment* vadj       = gtk_scrollable_get_vadjustment(scrollable);
+  const double doc_width    = gtk_adjustment_get_upper(hadj) - gtk_adjustment_get_lower(hadj);
+  const double doc_height   = gtk_adjustment_get_upper(vadj) - gtk_adjustment_get_lower(vadj);
+  if (doc_width <= 0 || doc_height <= 0) {
+    return false;
+  }
 
   float scroll_step = 40;
   girara_setting_get(session, "scroll-step", &scroll_step);
@@ -718,13 +723,11 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
     direction = -1.0;
   }
 
-  const unsigned int v_padding =
-      zathura_document_widget_get_page_v_padding(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget));
-  const unsigned int h_padding =
-      zathura_document_widget_get_page_h_padding(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget));
+  const unsigned int v_padding = single ? 0 : zathura_document_widget_get_page_v_padding(zathura->ui.document_widget);
+  const unsigned int h_padding = single ? 0 : zathura_document_widget_get_page_h_padding(zathura->ui.document_widget);
 
-  const double vstep = (double)(view_height + v_padding) / (double)doc_height;
-  const double hstep = (double)(view_width + h_padding) / (double)doc_width;
+  const double vstep = (double)(view_height + v_padding) / doc_height;
+  const double hstep = (double)(view_width + h_padding) / doc_width;
 
   /* compute new position */
   switch (argument->n) {
@@ -745,7 +748,7 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
 
   case PARTIAL_UP:
   case PARTIAL_DOWN:
-    pos_y += direction * t * (scroll_step * 0.2) / (double)doc_height;
+    pos_y += direction * t * (scroll_step * 0.2) / doc_height;
     break;
 
   case HALF_LEFT:
@@ -755,24 +758,24 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
 
   case UP:
   case DOWN:
-    pos_y += direction * t * scroll_step / (double)doc_height;
+    pos_y += direction * t * scroll_step / doc_height;
     break;
 
   case LEFT:
   case RIGHT:
-    pos_x += direction * t * scroll_hstep / (double)doc_width;
+    pos_x += direction * t * scroll_hstep / doc_width;
     break;
 
   case BIDIRECTIONAL: {
-    pos_x += event->x * t * scroll_hstep / (double)doc_width;
-    pos_y += event->y * t * scroll_step / (double)doc_height;
+    pos_x += event->x * t * scroll_hstep / doc_width;
+    pos_y += event->y * t * scroll_step / doc_height;
     break;
   }
   }
 
   /* handle boundaries */
-  const double end_x = 0.5 * (double)view_width / (double)doc_width;
-  const double end_y = 0.5 * (double)view_height / (double)doc_height;
+  const double end_x = MIN(0.5, 0.5 * (double)view_width / doc_width);
+  const double end_y = MIN(0.5, 0.5 * (double)view_height / doc_height);
 
   const double new_x = scroll_wrap ? 1.0 - end_x : end_x;
   const double new_y = scroll_wrap ? 1.0 - end_y : end_y;
@@ -792,7 +795,7 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
   }
 
   /* snap to the border if we change page */
-  const unsigned int new_page_id = position_to_page_number(zathura, pos_x, pos_y);
+  const unsigned int new_page_id = !single ? position_to_page_number(zathura, pos_x, pos_y) : page_id;
   if (scroll_page_aware == true && page_id != new_page_id) {
     switch (argument->n) {
     case FULL_LEFT:
