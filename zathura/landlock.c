@@ -12,10 +12,6 @@
 #include <errno.h>
 #include <girara/log.h>
 #include <girara/utils.h>
-#include <gtk/gtk.h>
-#ifdef GDK_WINDOWING_X11
-#include <gdk/x11/gdkx.h>
-#endif
 
 #ifndef landlock_create_ruleset
 static inline int landlock_create_ruleset(const struct landlock_ruleset_attr* const attr, const size_t size,
@@ -47,6 +43,14 @@ static inline int landlock_restrict_self(const int ruleset_fd, const __u32 flags
 
 #ifndef LANDLOCK_ACCESS_FS_RESOLVE_UNIX
 #define LANDLOCK_ACCESS_FS_RESOLVE_UNIX (1ULL << 16)
+#endif
+
+#ifndef LANDLOCK_ACCESS_NET_BIND_UDP
+#define LANDLOCK_ACCESS_NET_BIND_UDP (1ULL << 2)
+#endif
+
+#ifndef LANDLOCK_ACCESS_NET_CONNECT_SEND_UDP
+#define LANDLOCK_ACCESS_NET_CONNECT_SEND_UDP (1ULL << 3)
 #endif
 
 #ifndef LANDLOCK_SCOPE_SIGNAL
@@ -110,15 +114,6 @@ static int landlock_check_kernel(void) {
   return -1;
 }
 
-/* abstract unix sockets carry the X11 transport, so scope them only under Wayland */
-static bool session_is_wayland(void) {
-#ifdef GDK_WINDOWING_X11
-  return !GDK_IS_X11_DISPLAY(gdk_display_get_default());
-#else
-  return true;
-#endif
-}
-
 int landlock_drop_write(void) {
   const int abi = landlock_check_kernel();
   if (abi < 6) {
@@ -132,11 +127,12 @@ int landlock_drop_write(void) {
   if (abi >= 9) {
     fs |= LANDLOCK_ACCESS_FS_RESOLVE_UNIX;
   }
-  const __u64 net = LANDLOCK_ACCESS_NET_BIND_TCP | LANDLOCK_ACCESS_NET_CONNECT_TCP;
-  __u64 scoped    = LANDLOCK_SCOPE_SIGNAL;
-  if (session_is_wayland()) {
-    scoped |= LANDLOCK_SCOPE_ABSTRACT_UNIX_SOCKET;
+  __u64 net = LANDLOCK_ACCESS_NET_BIND_TCP | LANDLOCK_ACCESS_NET_CONNECT_TCP;
+  /* block udp, available since ABI 10 (Linux 7.2) */
+  if (abi >= 10) {
+    net |= LANDLOCK_ACCESS_NET_BIND_UDP | LANDLOCK_ACCESS_NET_CONNECT_SEND_UDP;
   }
+  const __u64 scoped = LANDLOCK_SCOPE_SIGNAL | LANDLOCK_SCOPE_ABSTRACT_UNIX_SOCKET;
   return landlock_drop(fs, net, scoped, abi);
 }
 
