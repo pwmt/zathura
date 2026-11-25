@@ -252,9 +252,11 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), fcntl, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, 0xffffffff, F_SETOWN_EX));
 
   /* Special requirements for ioctl, allowed on stdout/stderr */
-  /* deny TIOCSTI to prevent keystroke injection into the controlling TTY */
+  /* deny TIOCSTI and TIOCLINUX to prevent keystroke injection into the controlling TTY */
   ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), ioctl, 1,
            SCMP_CMP(1, SCMP_CMP_MASKED_EQ, 0xffffffff, (scmp_datum_t)TIOCSTI));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), ioctl, 1,
+           SCMP_CMP(1, SCMP_CMP_MASKED_EQ, 0xffffffff, (scmp_datum_t)TIOCLINUX));
   ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, 1));
   ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, 2));
 
