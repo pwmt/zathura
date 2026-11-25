@@ -824,10 +824,9 @@ void zathura_document_widget_update_mode(ZathuraDocumentWidget* document) {
     priv->position_y = 0.0;
     gtk_adjustment_set_value(priv->hadjustment, 0);
     gtk_adjustment_set_value(priv->vadjustment, 0);
-  } else {
-    zathura_document_widget_compute_layout(document);
   }
 
+  zathura_document_widget_compute_layout(document);
   gtk_widget_queue_resize(GTK_WIDGET(document));
 }
 
@@ -881,41 +880,24 @@ static void apply_pending_page_anchor(ZathuraDocumentWidget* document) {
   }
 }
 
-static void size_allocate_single(ZathuraDocumentWidget* document, int width, int height, int baseline) {
+static GtkAllocation get_grid_allocation(ZathuraDocumentWidget* document, int width, int height,
+                                         const GtkRequisition* size) {
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
-  zathura_document_t* z_document     = priv->document;
+  const bool single                  = priv->layout_mode == DOCUMENT_WIDGET_SINGLE && priv->document != NULL;
 
-  zathura_page_t* page =
-      zathura_document_get_page(z_document, zathura_document_widget_get_current_page_number(document));
-  if (page == NULL) {
-    return;
+  GtkAllocation allocation = {
+      .x      = -(int)gtk_adjustment_get_value(priv->hadjustment),
+      .y      = -(int)gtk_adjustment_get_value(priv->vadjustment),
+      .width  = single ? size->width : MAX(width, size->width),
+      .height = single ? size->height : MAX(height, size->height),
+  };
+
+  if (single) {
+    allocation.x = size->width < width ? (width - size->width) / 2 : CLAMP(allocation.x, width - size->width, 0);
+    allocation.y = size->height < height ? (height - size->height) / 2 : CLAMP(allocation.y, height - size->height, 0);
   }
 
-  unsigned int page_width = 0, page_height = 0;
-  page_calc_height_width(document, page, &page_height, &page_width, true);
-
-  ++priv->adjustment_update_depth;
-  if ((int)gtk_adjustment_get_upper(priv->hadjustment) != (int)page_width) {
-    gtk_adjustment_set_upper(priv->hadjustment, page_width);
-  }
-  if ((int)gtk_adjustment_get_upper(priv->vadjustment) != (int)page_height) {
-    gtk_adjustment_set_upper(priv->vadjustment, page_height);
-  }
-
-  --priv->adjustment_update_depth;
-
-  apply_pending_page_anchor(document);
-
-  const int value_h = gtk_adjustment_get_value(priv->hadjustment);
-  const int value_v = gtk_adjustment_get_value(priv->vadjustment);
-  const int clamp_h = MAX(MIN(-value_h, 0), -((int)page_width - width));
-  const int clamp_v = MAX(MIN(-value_v, 0), -((int)page_height - height));
-
-  const int x = ((int)page_width < width) ? (width - (int)page_width) / 2 : clamp_h;
-  const int y = ((int)page_height < height) ? (height - (int)page_height) / 2 : clamp_v;
-
-  const GtkAllocation allocation = {.x = x, .y = y, .width = (int)page_width, .height = (int)page_height};
-  gtk_widget_size_allocate(priv->grid, &allocation, baseline);
+  return allocation;
 }
 
 void zathura_document_widget_configure_viewport(ZathuraDocumentWidget* document, unsigned int width,
@@ -952,7 +934,8 @@ static void zathura_document_widget_size_allocate(GtkWidget* widget, int width, 
 
   bool size_changed = false;
   if (z_document) {
-    size_changed       = width != priv->alloc_width || height != priv->alloc_height;
+    size_changed = width != priv->alloc_width || height != priv->alloc_height;
+
     priv->alloc_width  = width;
     priv->alloc_height = height;
 
@@ -961,6 +944,7 @@ static void zathura_document_widget_size_allocate(GtkWidget* widget, int width, 
       priv->view_height = height;
       priv->view_width  = width;
       zathura_document_widget_adjust_view(document);
+
       /* the scale settled and the zoom is now fit so release the held render in this same frame */
       if (priv->zathura->sync.initial_render_held == true && priv->zathura->sync.scale_settled == true) {
         priv->zathura->sync.initial_render_held = false;
@@ -970,35 +954,23 @@ static void zathura_document_widget_size_allocate(GtkWidget* widget, int width, 
     zathura_document_widget_update_visible_pages(document);
   }
 
-  /* set the page size after adjust_view so the changed handler stores the position against the
-   * final document height and the view stays at the top on first open */
-  if (priv->grid && size_changed) {
+  if (!priv->grid) {
+    return;
+  }
+
+  /* Fitting and page creation above can invalidate the grid's previous measurement. */
+  GtkRequisition size;
+  gtk_widget_get_preferred_size(priv->grid, NULL, &size);
+
+  /* Configure scrolling after fitting so positions use the final document dimensions. */
+  if (size_changed) {
     zathura_document_widget_configure_viewport(document, width, height);
   }
 
-  if (priv->grid) {
-    /* position the grid by the adjustment values so navigation moves the view */
-    /* read natural size from arrange_grid totals to avoid measuring during size_allocate */
-    unsigned int doc_w = 0, doc_h = 0;
-    if (priv->col_widths != NULL && priv->row_heights != NULL && priv->nrow > 0 && priv->ncol > 0) {
-      zathura_document_widget_get_document_size(document, &doc_h, &doc_w);
-    }
+  apply_pending_page_anchor(document);
 
-    const int alloc_w = MAX(width, (int)doc_w);
-    const int alloc_h = MAX(height, (int)doc_h);
-
-    if (priv->layout_mode == DOCUMENT_WIDGET_SINGLE && z_document) {
-      size_allocate_single(document, width, height, baseline);
-      return;
-    }
-
-    apply_pending_page_anchor(document);
-
-    const int x                    = -(int)gtk_adjustment_get_value(priv->hadjustment);
-    const int y                    = -(int)gtk_adjustment_get_value(priv->vadjustment);
-    const GtkAllocation allocation = {.x = x, .y = y, .width = alloc_w, .height = alloc_h};
-    gtk_widget_size_allocate(priv->grid, &allocation, baseline);
-  }
+  const GtkAllocation allocation = get_grid_allocation(document, width, height, &size);
+  gtk_widget_size_allocate(priv->grid, &allocation, baseline);
 }
 
 static void zathura_document_widget_measure(GtkWidget* widget, GtkOrientation orientation, int for_size, int* minimum,
