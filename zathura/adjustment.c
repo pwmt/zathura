@@ -136,8 +136,12 @@ void page_number_to_position(ZathuraDocumentWidget* widget, unsigned int page_nu
   }
 
   /* compute the position */
-  *pos_x = ((double)cell_pos_x + shift_x * cell_width) / (double)doc_width;
-  *pos_y = ((double)cell_pos_y + shift_y * cell_height) / (double)doc_height;
+  if (pos_x) {
+    *pos_x = ((double)cell_pos_x + shift_x * cell_width) / (double)doc_width;
+  }
+  if (pos_y) {
+    *pos_y = ((double)cell_pos_y + shift_y * cell_height) / (double)doc_height;
+  }
 }
 
 gdouble zathura_adjustment_get_ratio(GtkAdjustment* adjustment) {

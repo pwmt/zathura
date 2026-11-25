@@ -661,13 +661,11 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
 
   /* If PAGE_TOP or PAGE_BOTTOM, go there and we are done */
   if (argument->n == PAGE_TOP) {
-    double dontcare = 0.5;
-    page_number_to_position(zathura->ui.document_widget, page_id, dontcare, 0.0, &dontcare, &pos_y);
+    page_number_to_position(zathura->ui.document_widget, page_id, 0.5, 0.0, NULL, &pos_y);
     position_set(zathura, pos_x, pos_y);
     return false;
   } else if (argument->n == PAGE_BOTTOM) {
-    double dontcare = 0.5;
-    page_number_to_position(zathura->ui.document_widget, page_id, dontcare, 1.0, &dontcare, &pos_y);
+    page_number_to_position(zathura->ui.document_widget, page_id, 0.5, 1.0, NULL, &pos_y);
     position_set(zathura, pos_x, pos_y);
     return false;
   }
@@ -796,28 +794,27 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
   /* snap to the border if we change page */
   const unsigned int new_page_id = position_to_page_number(zathura, pos_x, pos_y);
   if (scroll_page_aware == true && page_id != new_page_id) {
-    double dummy = 0.0;
     switch (argument->n) {
     case FULL_LEFT:
     case HALF_LEFT:
-      page_number_to_position(zathura->ui.document_widget, new_page_id, 1.0, 0.0, &pos_x, &dummy);
+      page_number_to_position(zathura->ui.document_widget, new_page_id, 1.0, 0.0, &pos_x, NULL);
       break;
 
     case FULL_RIGHT:
     case HALF_RIGHT:
-      page_number_to_position(zathura->ui.document_widget, new_page_id, 0.0, 0.0, &pos_x, &dummy);
+      page_number_to_position(zathura->ui.document_widget, new_page_id, 0.0, 0.0, &pos_x, NULL);
       break;
 
     case FULL_UP:
     case HALF_UP:
     case PARTIAL_UP:
-      page_number_to_position(zathura->ui.document_widget, new_page_id, 0.0, 1.0, &dummy, &pos_y);
+      page_number_to_position(zathura->ui.document_widget, new_page_id, 0.0, 1.0, NULL, &pos_y);
       break;
 
     case FULL_DOWN:
     case HALF_DOWN:
     case PARTIAL_DOWN:
-      page_number_to_position(zathura->ui.document_widget, new_page_id, 0.0, 0.0, &dummy, &pos_y);
+      page_number_to_position(zathura->ui.document_widget, new_page_id, 0.0, 0.0, NULL, &pos_y);
       break;
     }
   }
