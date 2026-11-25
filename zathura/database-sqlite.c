@@ -40,6 +40,21 @@ enum {
 zathura_database_t* zathura_sqldatabase_new(const char* path) {
   g_return_val_if_fail(path != NULL && strlen(path) != 0, NULL);
 
+#ifndef SQLITE_OMIT_COMPILEOPTION_DIAGS
+  if (sqlite3_compileoption_used("SQLITE_OMIT_AUTOINCREMENT") == 1) {
+    girara_error("sqlite3 built without support for AUTOINCREMENT; cannot create database schemes");
+    return NULL;
+  }
+  if (sqlite3_compileoption_used("SQLITE_OMIT_ALTERTABLE") == 1) {
+    girara_error("sqlite3 built without support for ALTER; cannot handle database updates");
+    return NULL;
+  }
+  if (sqlite3_compileoption_used("SQLITE_OMIT_SCHEMA_VERSION_PRAGMAS") == 1) {
+    girara_error("sqlite3 built without support for user_version; cannot handle database updates");
+    return NULL;
+  }
+#endif
+
   zathura_database_t* db          = g_object_new(ZATHURA_TYPE_SQLDATABASE, "path", path, NULL);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(ZATHURA_SQLDATABASE(db));
   if (priv->session == NULL) {
@@ -247,13 +262,6 @@ static void sqlite_db_check_layout(sqlite3* session, const int database_version,
     sqlite3_exec(session, "PRAGMA user_version = " G_STRINGIFY(DATABASE_VERSION) ";", NULL, 0, NULL);
     return;
   }
-
-#ifndef SQLITE_OMIT_COMPILEOPTION_DIAGS
-  if (sqlite3_compileoption_used("SQLITE_OMIT_ALTERTABLE") == 1) {
-    girara_error("sqlite3 built without support for ALTER, cannot update database");
-    return;
-  }
-#endif
 
   bool all_updates_ok = true;
   if (database_version < 1) {
