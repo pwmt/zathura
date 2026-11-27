@@ -20,6 +20,16 @@
 void cb_destroy(GtkWidget* widget, zathura_t* zathura);
 
 /**
+ * Window close request: the first request is refused with a warning if the
+ * document has unsaved annotations, a second one closes the window.
+ *
+ * @param window The window
+ * @param zathura The zathura session
+ * @return true if the window must stay open
+ */
+gboolean cb_close_request(GtkWindow* window, zathura_t* zathura);
+
+/**
  * This function gets called when the buffer of girara changes
  *
  * @param session The girara session

@@ -27,6 +27,7 @@
 #include "render.h"
 #include "shortcuts.h"
 #include "utils.h"
+#include "visual.h"
 #include "zathura.h"
 
 bool cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list) {
@@ -199,7 +200,7 @@ bool cmd_jumplist_list(girara_session_t* session, girara_list_t* argument_list) 
   return true;
 }
 
-bool cmd_close(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
+static bool close_document(girara_session_t* session, bool force) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
@@ -207,9 +208,21 @@ bool cmd_close(girara_session_t* session, girara_list_t* UNUSED(argument_list)) 
     return true;
   }
 
+  if (force == false && zathura_unsaved_changes_warn(zathura) == true) {
+    return false;
+  }
+
   document_close(zathura, false);
 
   return true;
+}
+
+bool cmd_close(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
+  return close_document(session, false);
+}
+
+bool cmd_close_force(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
+  return close_document(session, true);
 }
 
 bool cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
@@ -289,10 +302,14 @@ bool cmd_hlsearch(girara_session_t* session, girara_list_t* UNUSED(argument_list
   return true;
 }
 
-bool cmd_open(girara_session_t* session, girara_list_t* argument_list) {
+static bool open_document(girara_session_t* session, girara_list_t* argument_list, bool force) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
+
+  if (force == false && girara_list_size(argument_list) >= 1 && zathura_unsaved_changes_warn(zathura) == true) {
+    return false;
+  }
 
   const int argc = girara_list_size(argument_list);
   if (argc > 2) {
@@ -314,7 +331,29 @@ bool cmd_open(girara_session_t* session, girara_list_t* argument_list) {
   return true;
 }
 
+bool cmd_open(girara_session_t* session, girara_list_t* argument_list) {
+  return open_document(session, argument_list, false);
+}
+
+bool cmd_open_force(girara_session_t* session, girara_list_t* argument_list) {
+  return open_document(session, argument_list, true);
+}
+
 bool cmd_quit(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
+  sc_quit(session, NULL, NULL, 0);
+
+  return true;
+}
+
+bool cmd_quit_force(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  /* discard unsaved changes */
+  if (zathura_has_document(zathura) == true) {
+    zathura_document_set_modified(zathura_get_document(zathura), false);
+  }
   sc_quit(session, NULL, NULL, 0);
 
   return true;
@@ -332,6 +371,115 @@ bool cmd_print(girara_session_t* session, girara_list_t* UNUSED(argument_list)) 
 
   print(zathura);
 
+  return true;
+}
+
+bool cmd_annotate(girara_session_t* session, girara_list_t* argument_list) {
+  g_return_val_if_fail(session != NULL && argument_list != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura_has_document(zathura) == false) {
+    girara_notify(session, GIRARA_ERROR, _("No document opened."));
+    return false;
+  }
+
+  const size_t argc = girara_list_size(argument_list);
+  if (argc == 0) {
+    girara_notify(session, GIRARA_ERROR,
+                  _("Usage: annotate highlight|underline|squiggly|strikeout [color] | note <text> | "
+                    "comment <text> | delete"));
+    return false;
+  }
+
+  const char* action = girara_list_nth(argument_list, 0);
+
+  /* without visual mode, annotate the text selected with the mouse */
+  const bool use_mouse = zathura->visual == NULL;
+  if (use_mouse == true && (g_strcmp0(action, "delete") == 0 || g_strcmp0(action, "comment") == 0)) {
+    girara_notify(session, GIRARA_ERROR, _("Enter visual mode (v) first."));
+    return false;
+  }
+  g_autofree char* text = NULL;
+  if (argc > 1) {
+    GString* joined = g_string_new(NULL);
+    for (size_t i = 1; i < argc; ++i) {
+      if (i > 1) {
+        g_string_append_c(joined, ' ');
+      }
+      g_string_append(joined, girara_list_nth(argument_list, i));
+    }
+    text = g_string_free(joined, FALSE);
+  }
+
+  if (g_strcmp0(action, "delete") == 0) {
+    const unsigned int n = zathura_visual_annotation_delete(zathura);
+    if (n == 0) {
+      girara_notify(session, GIRARA_WARNING, _("No annotation at the selection."));
+      return false;
+    }
+    girara_notify(session, GIRARA_INFO, _("Deleted %u annotation(s). Use :write to save."), n);
+    return true;
+  }
+
+  if (g_strcmp0(action, "comment") == 0) {
+    if (text == NULL) {
+      girara_notify(session, GIRARA_ERROR, _("Missing comment text."));
+      return false;
+    }
+    const unsigned int n = zathura_visual_annotation_comment(zathura, text);
+    if (n == 0) {
+      girara_notify(session, GIRARA_WARNING, _("No annotation at the selection."));
+      return false;
+    }
+    girara_notify(session, GIRARA_INFO, _("Changed %u annotation(s). Use :write to save."), n);
+    return true;
+  }
+
+  zathura_annotation_type_t type = ZATHURA_ANNOTATION_OTHER;
+  const char* contents           = NULL;
+  double color[3]                = {0};
+  bool have_color                = false;
+
+  if (g_strcmp0(action, "highlight") == 0) {
+    type = ZATHURA_ANNOTATION_HIGHLIGHT;
+  } else if (g_strcmp0(action, "underline") == 0) {
+    type = ZATHURA_ANNOTATION_UNDERLINE;
+  } else if (g_strcmp0(action, "squiggly") == 0) {
+    type = ZATHURA_ANNOTATION_SQUIGGLY;
+  } else if (g_strcmp0(action, "strikeout") == 0) {
+    type = ZATHURA_ANNOTATION_STRIKEOUT;
+  } else if (g_strcmp0(action, "note") == 0) {
+    type     = ZATHURA_ANNOTATION_TEXT;
+    contents = text;
+    if (contents == NULL) {
+      girara_notify(session, GIRARA_ERROR, _("Missing note text."));
+      return false;
+    }
+  } else {
+    girara_notify(session, GIRARA_ERROR, _("Unknown annotation type: %s"), action);
+    return false;
+  }
+
+  if (type != ZATHURA_ANNOTATION_TEXT && text != NULL) {
+    GdkRGBA rgba;
+    if (gdk_rgba_parse(&rgba, text) == FALSE) {
+      girara_notify(session, GIRARA_ERROR, _("Invalid color: %s"), text);
+      return false;
+    }
+    color[0]   = rgba.red;
+    color[1]   = rgba.green;
+    color[2]   = rgba.blue;
+    have_color = true;
+  }
+
+  const double* use_color  = have_color == true ? color : NULL;
+  const unsigned int added = use_mouse == true ? zathura_visual_annotate_mouse(zathura, type, use_color, contents)
+                                               : zathura_visual_annotate(zathura, type, use_color, contents);
+  if (added == 0) {
+    return false;
+  }
+  girara_notify(session, GIRARA_INFO, _("Annotation added. Use :write to save."));
   return true;
 }
 
@@ -355,7 +503,10 @@ bool cmd_save(girara_session_t* session, girara_list_t* argument_list) {
     return false;
   }
 
-  if (girara_list_size(argument_list) == 1) {
+  if (girara_list_size(argument_list) == 0) {
+    /* without a path, save to the opened file, which is how annotations are saved */
+    document_save(zathura, zathura_document_get_path(zathura_get_document(zathura)), true);
+  } else if (girara_list_size(argument_list) == 1) {
     document_save(zathura, girara_list_nth(argument_list, 0), false);
   } else {
     girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments."));
@@ -380,7 +531,10 @@ bool cmd_savef(girara_session_t* session, girara_list_t* argument_list) {
     return false;
   }
 
-  if (girara_list_size(argument_list) == 1) {
+  if (girara_list_size(argument_list) == 0) {
+    /* without a path, save to the opened file, which is how annotations are saved */
+    document_save(zathura, zathura_document_get_path(zathura_get_document(zathura)), true);
+  } else if (girara_list_size(argument_list) == 1) {
     document_save(zathura, girara_list_nth(argument_list, 0), true);
   } else {
     girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments."));

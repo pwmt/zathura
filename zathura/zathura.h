@@ -432,6 +432,15 @@ zathura_fileinfo_t zathura_get_fileinfo(zathura_t* zathura);
 bool document_close(zathura_t* zathura, bool keep_monitor);
 
 /**
+ * Check whether closing or replacing the document would discard unsaved
+ * annotations. If it would, the user is warned.
+ *
+ * @param zathura The zathura session
+ * @return true if there are unsaved changes and the document must stay open
+ */
+bool zathura_unsaved_changes_warn(zathura_t* zathura);
+
+/**
  * Opens the page with the given number and adjust position if set
  *
  * @param zathura The zathura session

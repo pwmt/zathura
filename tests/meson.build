@@ -55,6 +55,27 @@ test('visual', visual,
   env: env
 )
 
+# a plugin for text/plain that keeps annotations in memory, loaded by the annotation test
+fake_plugin = shared_module('fake', files('fake-plugin.c'),
+  name_prefix: '',
+  dependencies: build_dependencies,
+  include_directories: include_directories,
+  c_args: defines + flags
+)
+
+annotation = executable('test_annotation', files('test_annotation.c'),
+  dependencies: build_dependencies + test_dependencies,
+  include_directories: include_directories,
+  c_args: defines + flags,
+  export_dynamic: true
+)
+test('annotation', annotation,
+  timeout: 60*60,
+  protocol: 'tap',
+  env: env,
+  depends: fake_plugin
+)
+
 xvfb = find_program('xvfb-run', required: get_option('tests-x11'))
 weston = find_program('weston', required: get_option('tests-wayland'))
 if xvfb.found() or weston.found()

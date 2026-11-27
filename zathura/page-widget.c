@@ -1141,6 +1141,13 @@ static void rotate_point(ZathuraPageWidget* widget, double orig_x, double orig_y
   }
 }
 
+girara_list_t* zathura_page_widget_get_selection(ZathuraPageWidget* widget) {
+  g_return_val_if_fail(widget != NULL, NULL);
+
+  ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
+  return priv->selection.draw == true ? priv->selection.list : NULL;
+}
+
 void zathura_page_widget_clear_selection(ZathuraPageWidget* widget) {
   g_return_if_fail(widget != NULL);
 

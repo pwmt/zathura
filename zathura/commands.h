@@ -63,6 +63,15 @@ bool cmd_jumplist_list(girara_session_t* session, girara_list_t* argument_list);
 bool cmd_close(girara_session_t* session, girara_list_t* argument_list);
 
 /**
+ * Close the current file and discard unsaved annotations
+ *
+ * @param session The used girara session
+ * @param argument_list List of passed arguments
+ * @return true if no error occurred
+ */
+bool cmd_close_force(girara_session_t* session, girara_list_t* argument_list);
+
+/**
  * Display document information
  *
  * @param session The used girara session
@@ -99,6 +108,15 @@ bool cmd_hlsearch(girara_session_t* session, girara_list_t* argument_list);
 bool cmd_open(girara_session_t* session, girara_list_t* argument_list);
 
 /**
+ * Open a document and discard unsaved annotations of the current one
+ *
+ * @param session The used girara session
+ * @param argument_list List of passed arguments
+ * @return true if no error occurred
+ */
+bool cmd_open_force(girara_session_t* session, girara_list_t* argument_list);
+
+/**
  * Print the current file
  *
  * @param session The used girara session
@@ -124,6 +142,15 @@ bool cmd_nohlsearch(girara_session_t* session, girara_list_t* argument_list);
  * @return true if no error occurred
  */
 bool cmd_quit(girara_session_t* session, girara_list_t* argument_list);
+
+/**
+ * Close zathura and discard unsaved changes
+ *
+ * @param session The used girara session
+ * @param argument_list List of passed arguments
+ * @return true if no error occurred
+ */
+bool cmd_quit_force(girara_session_t* session, girara_list_t* argument_list);
 
 /**
  * Save the current file
@@ -197,5 +224,15 @@ bool cmd_version(girara_session_t* session, girara_list_t* argument_list);
  * @return true if no error occurred
  */
 bool cmd_source(girara_session_t* session, girara_list_t* argument_list);
+
+/**
+ * Annotate the selection of visual mode: annotate highlight|underline|squiggly|strikeout [color],
+ * annotate note <text>, annotate comment <text>, annotate delete
+ *
+ * @param session The used girara session
+ * @param argument_list List of passed arguments
+ * @return true if no error occurred
+ */
+bool cmd_annotate(girara_session_t* session, girara_list_t* argument_list);
 
 #endif // COMMANDS_H

@@ -456,6 +456,40 @@ bool sc_visual_swap(girara_session_t* session, girara_argument_t* argument, gira
 bool sc_visual_yank(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
+ * Annotate the selection of visual mode with the default color of the type
+ *
+ * @param session The used girara session
+ * @param argument The used argument; n is a zathura_annotation_type_t
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occurred otherwise false
+ */
+bool sc_visual_annotate(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
+ * Annotate the text selected with the mouse
+ *
+ * @param session The used girara session
+ * @param argument The used argument; n is a zathura_annotation_type_t
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if an annotation was added otherwise false
+ */
+bool sc_mouse_annotate(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
+ * Delete the annotations at the selection or caret of visual mode
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if an annotation was deleted otherwise false
+ */
+bool sc_visual_annotation_delete(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
+                                 unsigned int t);
+
+/**
  * Leave visual mode, or cancel a y that waits for a motion
  *
  * @param session The used girara session

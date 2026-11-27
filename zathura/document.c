@@ -37,6 +37,7 @@ struct zathura_document_s {
   XXH128_canonical_t hash;        /**< XXH3 hash of the document */
   unsigned int number_of_pages;   /**< Number of pages */
   bool hash_computed;             /**< Whether the hash has been computed yet */
+  bool modified;                  /**< Changed in memory since it was opened or last saved */
 };
 
 static bool hash_file(XXH128_canonical_t* dst, const char* path) {
@@ -282,7 +283,21 @@ zathura_error_t zathura_document_save_as(zathura_document_t* document, const cha
     return ZATHURA_ERROR_NOT_IMPLEMENTED;
   }
 
-  return functions->document_save_as(document, document->data, path);
+  const zathura_error_t error = functions->document_save_as(document, document->data, path);
+  if (error == ZATHURA_ERROR_OK) {
+    document->modified = false;
+  }
+  return error;
+}
+
+bool zathura_document_is_modified(zathura_document_t* document) {
+  return document != NULL && document->modified;
+}
+
+void zathura_document_set_modified(zathura_document_t* document, bool modified) {
+  if (document != NULL) {
+    document->modified = modified;
+  }
 }
 
 girara_tree_node_t* zathura_document_index_generate(zathura_document_t* document, zathura_error_t* error) {

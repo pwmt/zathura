@@ -515,6 +515,10 @@ bool sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument), g
     return false;
   }
 
+  if (zathura_unsaved_changes_warn(zathura) == true) {
+    return false;
+  }
+
   zathura_fileinfo_t file_info = zathura_get_fileinfo(zathura);
   const bool opened = document_open(zathura, zathura_filemonitor_get_filepath(zathura->file_monitor.monitor), NULL,
                                     zathura->file_monitor.password, file_info.current_page, &file_info);
@@ -1525,6 +1529,13 @@ bool sc_quit(girara_session_t* session, girara_argument_t* UNUSED(argument), gir
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
+  if (zathura_has_document(zathura) == true && zathura_document_is_modified(zathura_get_document(zathura)) == true) {
+    girara_notify(session, GIRARA_ERROR,
+                  _("The document has unsaved annotations. Use :write to save them, or :quit! to "
+                    "quit anyway."));
+    return false;
+  }
+
   girara_argument_t arg = {.n = GIRARA_HIDE, .data = NULL};
   girara_isc_completion(session, &arg, NULL, 0);
 
@@ -1750,6 +1761,10 @@ bool sc_file_chooser(girara_session_t* session, girara_argument_t* UNUSED(argume
   return false;
 #endif
 
+  if (zathura_unsaved_changes_warn(zathura) == true) {
+    return false;
+  }
+
   g_autoptr(GtkFileDialog) dialog = gtk_file_dialog_new();
   gtk_file_dialog_set_title(dialog, _("Open file"));
 
@@ -1899,6 +1914,55 @@ bool sc_visual_yank(girara_session_t* session, girara_argument_t* argument, gira
     zathura_visual_yank(zathura, t);
   }
   return false;
+}
+
+bool sc_visual_annotate(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
+                        unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  g_return_val_if_fail(argument != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->visual == NULL) {
+    return false;
+  }
+  if (zathura_visual_annotate(zathura, argument->n, NULL, NULL) == 0) {
+    return false;
+  }
+  girara_notify(session, GIRARA_INFO, _("Annotation added. Use :write to save."));
+  return true;
+}
+
+bool sc_mouse_annotate(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
+                       unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  g_return_val_if_fail(argument != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura_visual_annotate_mouse(zathura, argument->n, NULL, NULL) == 0) {
+    return false;
+  }
+  girara_notify(session, GIRARA_INFO, _("Annotation added. Use :write to save."));
+  return true;
+}
+
+bool sc_visual_annotation_delete(girara_session_t* session, girara_argument_t* UNUSED(argument),
+                                 girara_event_t* UNUSED(event), unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->visual == NULL) {
+    return false;
+  }
+  const unsigned int deleted = zathura_visual_annotation_delete(zathura);
+  if (deleted == 0) {
+    girara_notify(session, GIRARA_WARNING, _("No annotation at the selection."));
+    return false;
+  }
+  girara_notify(session, GIRARA_INFO, _("Deleted %u annotation(s). Use :write to save."), deleted);
+  return true;
 }
 
 bool sc_visual_exit(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),

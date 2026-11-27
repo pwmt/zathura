@@ -304,6 +304,10 @@ static void add_default_shortcuts(girara_session_t* gsession, girara_mode_t mode
   girara_shortcut_add(gsession, 0, GDK_KEY_v, NULL, sc_visual, mode, DEFAULT, NULL);
   girara_shortcut_add(gsession, 0, GDK_KEY_V, NULL, sc_visual, mode, LINEWISE, NULL);
   girara_shortcut_add(gsession, 0, 0, "gv", sc_visual_reselect, mode, 0, NULL);
+  girara_shortcut_add(gsession, 0, 0, "gh", sc_mouse_annotate, mode, ZATHURA_ANNOTATION_HIGHLIGHT, NULL);
+  girara_shortcut_add(gsession, 0, 0, "gu", sc_mouse_annotate, mode, ZATHURA_ANNOTATION_UNDERLINE, NULL);
+  girara_shortcut_add(gsession, 0, 0, "gs", sc_mouse_annotate, mode, ZATHURA_ANNOTATION_SQUIGGLY, NULL);
+  girara_shortcut_add(gsession, 0, 0, "gx", sc_mouse_annotate, mode, ZATHURA_ANNOTATION_STRIKEOUT, NULL);
   girara_shortcut_add(gsession, 0, GDK_KEY_O, NULL, sc_focus_inputbar, mode, APPEND_FILEPATH, ":open ");
 
   girara_shortcut_add(gsession, 0, GDK_KEY_f, NULL, sc_follow, mode, 0, NULL);
@@ -735,6 +739,14 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_add(gsession, 0,                GDK_KEY_o,           NULL, sc_visual_swap, VISUAL, 0,                   NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_y,           NULL, sc_visual_yank, VISUAL, 0,                   NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_Y,           NULL, sc_visual_yank, VISUAL, LINE_END,            NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_H,           NULL, sc_visual_annotate, VISUAL, ZATHURA_ANNOTATION_HIGHLIGHT, NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_U,           NULL, sc_visual_annotate, VISUAL, ZATHURA_ANNOTATION_UNDERLINE, NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_X,           NULL, sc_visual_annotate, VISUAL, ZATHURA_ANNOTATION_STRIKEOUT, NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_S,           NULL, sc_visual_annotate, VISUAL, ZATHURA_ANNOTATION_SQUIGGLY, NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_D,           NULL, sc_visual_annotation_delete, VISUAL, 0, NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_C,           NULL, sc_focus_inputbar, VISUAL, 0, ":annotate comment ");
+  girara_shortcut_add(gsession, 0,                GDK_KEY_N,           NULL, sc_focus_inputbar, VISUAL, 0, ":annotate note ");
+  girara_shortcut_add(gsession, 0,                GDK_KEY_A,           NULL, sc_focus_inputbar, VISUAL, 0, ":annotate highlight ");
   girara_shortcut_add(gsession, 0,                GDK_KEY_Escape,      NULL, sc_visual_exit, VISUAL, 0,                   NULL);
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_bracketleft, NULL, sc_visual_exit, VISUAL, 0,                   NULL);
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,           NULL, sc_visual_exit, VISUAL, 0,                   NULL);
@@ -826,17 +838,21 @@ void config_load_default(zathura_t* zathura) {
   girara_inputbar_command_add(gsession, "bjump",      NULL,   cmd_bookmark_open,       cc_bookmarks,  _("Jump to bookmark"));
   girara_inputbar_command_add(gsession, "jumplist",   NULL,   cmd_jumplist_list,       NULL,          _("Show recent jumps in jumplist"));
   girara_inputbar_command_add(gsession, "close",      NULL,   cmd_close,               NULL,          _("Close current file"));
+  girara_inputbar_command_add(gsession, "close!",     NULL,   cmd_close_force,         NULL,          _("Close current file and discard unsaved annotations"));
   girara_inputbar_command_add(gsession, "info",       NULL,   cmd_info,                NULL,          _("Show file information"));
   girara_inputbar_command_add(gsession, "exec",       NULL,   cmd_exec,                NULL,          _("Execute a command"));
   girara_inputbar_command_add(gsession, "!",          NULL,   cmd_exec,                NULL,          _("Execute a command")); /* like vim */
   girara_inputbar_command_add(gsession, "help",       NULL,   cmd_help,                NULL,          _("Show help"));
   girara_inputbar_command_add(gsession, "open",       "o",    cmd_open,                cc_open,       _("Open document"));
+  girara_inputbar_command_add(gsession, "open!",      "o!",   cmd_open_force,          cc_open,       _("Open document and discard unsaved annotations"));
   girara_inputbar_command_add(gsession, "quit",       "q",    cmd_quit,                NULL,          _("Close zathura"));
+  girara_inputbar_command_add(gsession, "quit!",      "q!",   cmd_quit_force,          NULL,          _("Close zathura and discard unsaved annotations"));
   girara_inputbar_command_add(gsession, "print",      NULL,   cmd_print,               NULL,          _("Print document"));
   girara_inputbar_command_add(gsession, "save",       NULL,   cmd_save,                cc_write,      _("Save document"));
   girara_inputbar_command_add(gsession, "save!",      NULL,   cmd_savef,               cc_write,      _("Save document (and force overwriting)"));
   girara_inputbar_command_add(gsession, "write",      NULL,   cmd_save,                cc_write,      _("Save document"));
   girara_inputbar_command_add(gsession, "write!",     NULL,   cmd_savef,               cc_write,      _("Save document (and force overwriting)"));
+  girara_inputbar_command_add(gsession, "annotate",   NULL,   cmd_annotate,            NULL,          _("Annotate the selection (visual mode)"));
   girara_inputbar_command_add(gsession, "export",     NULL,   cmd_export,              cc_export,     _("Save attachments"));
   girara_inputbar_command_add(gsession, "offset",     NULL,   cmd_offset,              NULL,          _("Set page offset"));
   girara_inputbar_command_add(gsession, "mark",       NULL,   cmd_marks_add,           NULL,          _("Mark current location within the document"));
@@ -899,6 +915,9 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_mapping_add(gsession, "visual_move",              sc_visual_move);
   girara_shortcut_mapping_add(gsession, "visual_swap",              sc_visual_swap);
   girara_shortcut_mapping_add(gsession, "visual_yank",              sc_visual_yank);
+  girara_shortcut_mapping_add(gsession, "visual_annotate",          sc_visual_annotate);
+  girara_shortcut_mapping_add(gsession, "mouse_annotate",           sc_mouse_annotate);
+  girara_shortcut_mapping_add(gsession, "visual_annotation_delete", sc_visual_annotation_delete);
   girara_shortcut_mapping_add(gsession, "zoom",                     sc_zoom);
   girara_shortcut_mapping_add(gsession, "zoom_page",                sc_zoom_page);
 

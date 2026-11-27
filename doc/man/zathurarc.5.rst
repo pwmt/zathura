@@ -434,6 +434,26 @@ They can also be combined with modifiers:
     copies the line of the caret; both stay in visual mode. Pass ``line-end``
     to copy to the end of the line, or the whole lines of a selection, like Y.
 
+  * ``visual_annotate``
+
+    Annotate the selection. The argument is the annotation type; ``H``, ``U``, ``S`` and
+    ``X`` are bound to highlight, underline, squiggly and strikeout by default.
+
+  * ``mouse_annotate``
+
+    Annotate the text selected with the mouse. The argument is the annotation
+    type; ``gh``, ``gu``, ``gs`` and ``gx`` are bound to highlight, underline,
+    squiggly and strikeout by default.
+
+  * ``visual_annotation_delete``
+
+    Delete the annotations at the selection or caret. Bound to ``D`` by default.
+
+  Commenting is done with ``:annotate comment <text>``; ``C`` is bound to open the
+  command line with it by default (using ``focus_inputbar``). ``N`` does the
+  same with ``:annotate note ``, and ``A`` with ``:annotate highlight `` for annotating
+  in a custom color.
+
   * ``zoom``
 
     Zoom in or out.

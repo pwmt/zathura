@@ -114,6 +114,13 @@ void zathura_page_widget_update_surface(ZathuraPageWidget* widget, cairo_surface
  */
 void zathura_page_widget_clear_selection(ZathuraPageWidget* widget);
 /**
+ * Get the rectangles of the mouse selection of the page.
+ *
+ * @param widget The page widget
+ * @return List of rectangles in page coordinates owned by the widget, or NULL if nothing is selected
+ */
+girara_list_t* zathura_page_widget_get_selection(ZathuraPageWidget* widget);
+/**
  * Update the mouse selection of the page to end at a point.
  * @param widget the widget
  * @param x,y the end of the selection, relative to the widget

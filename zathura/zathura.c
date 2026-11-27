@@ -336,6 +336,7 @@ static bool init_ui(zathura_t* zathura) {
   girara_statusbar_item_set_text(zathura->ui.statusbar.file, _("[No name]"));
 
   /* signals */
+  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "close-request", G_CALLBACK(cb_close_request), zathura);
   zathura->signals.destroy_handler =
       g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "destroy", G_CALLBACK(cb_destroy), zathura);
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "close-request", G_CALLBACK(cb_close_request), zathura);
@@ -1655,6 +1656,18 @@ static void document_index_clear(zathura_t* zathura) {
   if (girara_mode_get(zathura->ui.session) == zathura->modes.index) {
     girara_mode_set(zathura->ui.session, zathura->modes.normal);
   }
+}
+
+bool zathura_unsaved_changes_warn(zathura_t* zathura) {
+  g_return_val_if_fail(zathura != NULL, false);
+
+  if (zathura_has_document(zathura) == false || zathura_document_is_modified(zathura_get_document(zathura)) == false) {
+    return false;
+  }
+
+  girara_notify(zathura->ui.session, GIRARA_ERROR,
+                _("The document has unsaved annotations. Use :write to save them, or :close! to discard them."));
+  return true;
 }
 
 bool document_close(zathura_t* zathura, bool keep_monitor) {

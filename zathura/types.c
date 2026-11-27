@@ -82,6 +82,17 @@ void zathura_text_layout_free(zathura_text_layout_t* layout) {
   g_free(layout);
 }
 
+void zathura_annotation_free(zathura_annotation_t* annotation) {
+  if (annotation == NULL) {
+    return;
+  }
+
+  g_free(annotation->quads);
+  g_free(annotation->contents);
+  g_free(annotation->author);
+  g_free(annotation);
+}
+
 static void document_information_entry_free(void* data) {
   zathura_document_information_entry_t* entry = data;
   zathura_document_information_entry_free(entry);
