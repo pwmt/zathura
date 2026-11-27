@@ -11,11 +11,10 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <girara/utils.h>
-#include <linux/sched.h> /* for clone filter */
-#include <unistd.h>      /* for fstat */
-#include <sys/mman.h>    /* for mmap/mprotect arguments */
-#include <sys/ioctl.h>   /* for TIOCSTI */
-#include <termios.h>
+#include <linux/sched.h>  /* for clone filter */
+#include <sys/mman.h>     /* for madvise arguments */
+#include <sys/ioctl.h>    /* for TCGETS, TCGETS2 and TIOCGWINSZ */
+#include <asm/termbits.h> /* for struct termios2 used by TCGETS2 */
 
 #include <gtk/gtk.h>
 #ifdef GDK_WINDOWING_X11
@@ -60,37 +59,26 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   }
 
   ALLOW_RULE(access); /* faccessat, faccessat2 */
-  /* ALLOW_RULE(bind);  unused? */
   ALLOW_RULE(brk);
-  /* ALLOW_RULE(clock_getres); unused? */
   /* ALLOW_RULE(clone); specified below, clone3 see comment below */
   ALLOW_RULE(clock_gettime); /* used when vDSO function is unavailable */
-#ifdef __NR_clock_gettime64
-  ALLOW_RULE(clock_gettime64);
-#endif
   ALLOW_RULE(close);
   ALLOW_RULE(epoll_create1);
   ALLOW_RULE(epoll_ctl);
   ALLOW_RULE(eventfd2);
   ALLOW_RULE(exit);
   ALLOW_RULE(exit_group);
-  /* ALLOW_RULE(epoll_create); outdated, to be removed */
-  /* ALLOW_RULE(fadvise64); */
   ALLOW_RULE(faccessat);
   ALLOW_RULE(faccessat2);
   ALLOW_RULE(fallocate);
   /* ALLOW_RULE(fcntl); specified below */
 #ifdef __NR_fstat
-  ALLOW_RULE(fstat); /* used by older libc, stat (below), lstat(below), fstatat, newfstatat(below) */
+  ALLOW_RULE(fstat); /* stat, lstat, fstatat, newfstatat */
 #endif
-  ALLOW_RULE(fstatfs); /* statfs (below) */
+  ALLOW_RULE(fstatfs); /* statfs */
   ALLOW_RULE(ftruncate);
   ALLOW_RULE(futex);
-#ifdef __NR_futex_time64
-  ALLOW_RULE(futex_time64);
-#endif
   ALLOW_RULE(getcwd); /* used by the ps plugin */
-  /* ALLOW_RULE(getdents); 32 bit only */
   ALLOW_RULE(getdents64);
   ALLOW_RULE(getegid);
   ALLOW_RULE(geteuid);
@@ -100,13 +88,9 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(gettid);
   ALLOW_RULE(gettimeofday); /* used when vDSO function is unavailable */
   ALLOW_RULE(getuid);
-  ALLOW_RULE(getrandom); /* occasionally required */
-  /* ALLOW_RULE(getresgid); */
-  /* ALLOW_RULE(getresuid); */
-  /* ALLOW_RULE(getrlimit); unused? */
-  /* ALLOW_RULE(getpeername); not required if database is initializes properly */
+  ALLOW_RULE(getrandom);         /* used by NSS for signature verification */
   ALLOW_RULE(inotify_add_watch); /* required by filemonitor feature */
-  ALLOW_RULE(inotify_init1);     /* used by filemonitor, inotify_init (glib<2.9) */
+  ALLOW_RULE(inotify_init1);     /* used by filemonitor, inotify_init (glibc<2.9) */
   ALLOW_RULE(inotify_rm_watch);  /* used by filemonitor */
   /* ALLOW_RULE (ioctl); specified below  */
   ALLOW_RULE(lseek);
@@ -114,26 +98,20 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(lsm_get_self_attr);
   ALLOW_RULE(lsm_list_modules);
 #endif
-  /* ALLOW_RULE(lstat); unused? */
-  ALLOW_RULE(madvise);
+  ALLOW_RULE(lstat); /* used by signature verification on musl */
+  /* ALLOW_RULE(madvise); specified below */
   ALLOW_RULE(memfd_create);
   ALLOW_RULE(mmap);
-#ifdef __NR_mmap2
-  ALLOW_RULE(mmap2); /* Only required on 32-bit ARM systems */
-#endif
   ALLOW_RULE(mprotect);
-  ALLOW_RULE(mremap); /* mupdf requirement */
+  ALLOW_RULE(mremap);
   ALLOW_RULE(munmap);
   ALLOW_RULE(newfstatat);
   /* ALLOW_RULE (open); specified below */
   /* ALLOW_RULE (openat); specified below */
-  /* ALLOW_RULE(pipe); unused? */
-  /* ALLOW_RULE(pipe2); used by dbus feature - disabled in sandbox*/
   ALLOW_RULE(poll);
   ALLOW_RULE(ppoll); /* AArch64 requirement */
   /* ALLOW_RULE (prctl); specified below  */
   ALLOW_RULE(pread64); /* equals pread */
-  /* ALLOW_RULE(pwrite64); equals pwrite */
   ALLOW_RULE(read);
   /* musl libc (and some other non-glibc libc implementations) may use readv; */
 #if !defined(__GLIBC__)
@@ -141,39 +119,22 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
 #endif
   ALLOW_RULE(readlink);   /* readlinkat */
   ALLOW_RULE(readlinkat); /* AArch64 requirement */
-  /* ALLOW_RULE(recvfrom); X11 only */
   ALLOW_RULE(recvmsg);
-  ALLOW_RULE(restart_syscall); /* required for wakeup from suspense */
+  ALLOW_RULE(restart_syscall); /* required for wakeup after SIGSTOP or suspend */
   ALLOW_RULE(rseq);
   ALLOW_RULE(rt_sigaction);
   ALLOW_RULE(rt_sigprocmask);
   ALLOW_RULE(rt_sigreturn);
   ALLOW_RULE(sched_yield); /* used by the cb plugin */
-  /* ALLOW_RULE(sched_setattr); */
-  /* ALLOW_RULE(sched_getattr); */
-  ALLOW_RULE(sendmsg); /* ipc, used by wayland socket */
-  /* ALLOW_RULE(sendto); ipc, investigate */
-  /* ALLOW_RULE(select); pselect (equals pselect6) */
+  ALLOW_RULE(sendmsg);     /* ipc, used by wayland socket */
   ALLOW_RULE(set_robust_list);
-  /* ALLOW_RULE(shmat); X11 only */
-  /* ALLOW_RULE(shmctl); X11 only */
-  /* ALLOW_RULE(shmdt); X11 only */
-  /* ALLOW_RULE(shmget); X11 only */
-  /* ALLOW_RULE(shutdown); */
-  ALLOW_RULE(stat); /* used by older libc - Debian 11 */
+  ALLOW_RULE(stat);
   ALLOW_RULE(statx);
-  ALLOW_RULE(statfs); /* used by filemonitor, fstatfs above */
+  ALLOW_RULE(statfs); /* used by filemonitor, fstatfs */
   ALLOW_RULE(sysinfo);
-  /* ALLOW_RULE(tgkill); investigate - used when zathura is quickly restarted and dbus socket is closed */
-  /* ALLOW_RULE(umask); X11 only */
-  /* ALLOW_RULE(uname); X11 only */
-  /* ALLOW_RULE(unlink); unused?, unlinkat */
-  ALLOW_RULE(write); /* investigate further */
-#if !defined(__GLIBC__)
+  ALLOW_RULE(write);
   ALLOW_RULE(writev);
-#endif
-  /*  ALLOW_RULE(writev); X11 only */
-  ALLOW_RULE(wait4); /* used by SIGSTOP signal */
+  ALLOW_RULE(wait4);
 
   /* required for testing only */
   ALLOW_RULE(timer_create);
@@ -207,7 +168,6 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
     ALLOW_RULE(shmdt);
     ALLOW_RULE(shmget);
     ALLOW_RULE(recvfrom);
-    ALLOW_RULE(writev); /* pwritev, pwritev2 */
   } else {
     girara_debug("On Wayland, blocking X11 syscalls");
   }
@@ -250,31 +210,40 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), fcntl, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, 0xffffffff, F_SETOWN));
   ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), fcntl, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, 0xffffffff, F_SETSIG));
   ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), fcntl, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, 0xffffffff, F_SETOWN_EX));
+  /* no file leases or directory notifications */
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), fcntl, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, 0xffffffff, F_SETLEASE));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), fcntl, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, 0xffffffff, F_NOTIFY));
 
-  /* Special requirements for ioctl, allowed on stdout/stderr */
-  /* deny TIOCSTI and TIOCLINUX to prevent keystroke injection into the controlling TTY */
-  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), ioctl, 1,
-           SCMP_CMP(1, SCMP_CMP_MASKED_EQ, 0xffffffff, (scmp_datum_t)TIOCSTI));
-  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), ioctl, 1,
-           SCMP_CMP(1, SCMP_CMP_MASKED_EQ, 0xffffffff, (scmp_datum_t)TIOCLINUX));
-  ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, 1));
-  ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, 2));
+  /* ioctl: only reading terminal settings reaches the kernel */
+  ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, 0xffffffff, TCGETS));
+#ifdef TCGETS2
+  ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, 0xffffffff, TCGETS2));
+#endif
+  ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, 0xffffffff, TIOCGWINSZ));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(ENOTTY), ioctl, 1, SCMP_CMP(1, SCMP_CMP_LT, TCGETS));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(ENOTTY), ioctl, 1, SCMP_CMP(1, SCMP_CMP_GT, TCGETS));
+
+  /* madvise: no page merging or forced page reclaim */
+  ADD_RULE("allow", SCMP_ACT_ALLOW, madvise, 1, SCMP_CMP(2, SCMP_CMP_LT, MADV_MERGEABLE));
+  ADD_RULE("allow", SCMP_ACT_ALLOW, madvise, 1, SCMP_CMP(2, SCMP_CMP_GT, MADV_MERGEABLE));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), madvise, 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, 0xffffffff, MADV_MERGEABLE));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), madvise, 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, 0xffffffff, MADV_PAGEOUT));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), madvise, 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, 0xffffffff, MADV_COLD));
 
   /* special restrictions for prctl, only allow PR_SET_NAME/PR_SET_PDEATHSIG */
   ADD_RULE("allow", SCMP_ACT_ALLOW, prctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_NAME));
   ADD_RULE("allow", SCMP_ACT_ALLOW, prctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_PDEATHSIG));
 
-  /* This wont work yet, because PROT_EXEC is used after seccomp is called - fix by second filter? */
-  /* Prevent the creation of executable memory */
+  /* executable memory is not restricted, code written to a memfd can still be mapped executable */
   /* ADD_RULE("allow", SCMP_ACT_ALLOW, mmap, 1,  SCMP_CMP(2, SCMP_CMP_MASKED_EQ, PROT_READ | PROT_WRITE |
               PROT_NONE, PROT_READ | PROT_WRITE | PROT_NONE)); */
 
-  /* Prevent the creation of executable memory - required by some files */
+  /* executable memory is not restricted, code written to a memfd can still be mapped executable */
   /*ADD_RULE("allow", SCMP_ACT_ALLOW, mprotect, 1,
    *         SCMP_CMP(2, SCMP_CMP_MASKED_EQ, PROT_READ | PROT_WRITE | PROT_NONE, PROT_READ | PROT_WRITE | PROT_NONE));
    */
 
-  /* open syscall still used by musl sometimes */
+  /* open is used by musl */
   /* special restrictions for open, prevent opening files for writing */
   ADD_RULE("allow", SCMP_ACT_ALLOW, open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR | O_CREAT | O_TRUNC, 0));
   ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY));
@@ -339,11 +308,6 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* Sandbox Status Notes:
    *
    * write: no actual files on the filesystem are opened with write permissions
-   *    exception is /run/user/UID/dconf/user (file descriptor not available during runtime)
-   *
-   *
-   * mkdir: needed for first run only to create /run/user/UID/dconf (before seccomp init)
-   * wait4: required to attempt opening links (which is then blocked)
    *
    *
    * Note about clone3():
@@ -353,13 +317,6 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
    * arguments.
    *
    *
-   * Ideas for additional restrictions:
-   * Apply second filter after the file has been opened but before it is parsed
-   * This may allow the removal of additional syscalls
-   * Additional restrictions of commands such as open may be required since it won't allow opening new files
-   * Note: during rendering zathura still opens fonts, which makes this infeasible
-   * - a second landlock filter would be an alternative solution to restrict read access to /usr/share/fonts only.
-   *
    * Alternative sandbox approach:
    * Currently the entire sandbox is provided in a separate binary and prevents the use of
    * some features, including usability services.
@@ -367,9 +324,6 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
    * This would allow the creation of a separate rendering process that can be restricted without removing features
    *
    */
-
-  /* when zathura is run on wayland, with X11 server available but blocked, unset the DISPLAY variable */
-  /* otherwise it will try to connect to X11 using inet socket protocol */
 
   /* applying filter... */
   /* synchronize the filter across all threads of the process; without this

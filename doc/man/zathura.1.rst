@@ -457,8 +457,25 @@ based sandbox enabled. Some features are disabled when using sandbox mode:
 * SyncTeX support
 * accessibility support
 
-The sandbox mode is still experimental with some libc implementations. The
-current supported and tested libc implementations is glibc.
+Sandbox threat model
+~~~~~~~~~~~~~~~~~~~~
+
+zathura-sandbox implements two independent security layers, landlock and
+seccomp, which both implement the threat model independently. zathura parses and
+renders complex multimedia data that often originates from untrusted sources.
+The threat model assumes the existence of exploitable bugs in the libraries used
+by zathura, and that code execution in the context of the zathura process is a
+possible consequence of opening malicious files. To mitigate this,
+zathura-sandbox blocks dangerous operations at the process level to prevent
+damage. It does so by preventing write access to the file system, IPC
+communication and network access. As a consequence, persistent changes to the
+system, sandbox escape and extraction of data are blocked, and the remaining
+attack surface is that of the Linux kernel interfaces (system calls), which is
+severely limited when using the seccomp implementation. By default
+zathura-sandbox uses both seccomp and landlock to provide maximum isolation.
+(X11 is not supported by the full sandbox implementation and only covers a best
+effort isolation, X11 clients cannot be isolated and IPC with other X11 windows
+allows sandbox escape)
 
 Known bugs
 ----------
